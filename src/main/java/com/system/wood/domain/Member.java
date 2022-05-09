@@ -1,5 +1,6 @@
 package com.system.wood.domain;
 
+import com.system.wood.domain.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

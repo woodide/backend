@@ -1,5 +1,6 @@
-package com.system.wood.domain;
+package com.system.wood.domain.container;
 
+import com.system.wood.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
