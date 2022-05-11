@@ -1,39 +1,33 @@
 package com.system.wood.web;
 
+import com.system.wood.domain.Member;
+import com.system.wood.infra.InfraService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.Executors;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class DockerController {
+
+    private final DockerService dockerService;
 
     @GetMapping("/docker/create")
     public void createContainer(){
+
+        Member member = new Member(); // mock data, 인자로 받을 예정
+        String containerName = "name"; // mock data, request로 받을 예정
+
         try {
-            // dockerService에 비즈니스 로직을 옮길 예정
-            String command = "docker run -d --name=code-server2 " +
-                    "-e PUID=82 -e PGID=82 -e TZ=Asia/Seoul " +
-                    "-e SUDO_PASSWORD=password -p 8442:8443 " +
-                    "-v :~/Desktop/wood/test_env2/data/code-server:/config " +
-                    "--restart unless-stopped linuxserver/code-server";
-            Process process = Runtime.getRuntime()
-                    .exec(command);
-            StreamGobbler streamGobbler =
-                    new StreamGobbler(process.getInputStream(), System.out::println);
-            Executors.newSingleThreadExecutor().submit(streamGobbler);
-            int exitCode = process.waitFor();
-            assert exitCode == 0;
+            dockerService.createContainer(containerName, member);
+            // todo: return success
         } catch (IOException e) {
             e.printStackTrace();
-            log.info("IOEeception 발생");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            log.info("InterruptedException 발생");
+            // todo: return fail
         }
     }
 }
