@@ -58,6 +58,8 @@ public class InfraService {
         if(error.isEmpty()) {
             log.info("컨테이너 생성: "+ output);
         } else {
+            log.info("error message: "+error);
+            log.info("command: "+ command);
             throw new BusinessException(ErrorCode.CANNOT_CREATE_CONTAINER);
         }
 
