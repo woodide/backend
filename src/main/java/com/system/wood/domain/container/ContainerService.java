@@ -1,6 +1,5 @@
 package com.system.wood.domain.container;
 
-import com.system.wood.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +20,10 @@ public class ContainerService {
 
     // todo: 안 쓰는 포트넘버를 구하는 로직 추가
     public Integer getAvailablePortNum() {
-        return 9443;
+        // 서버 켜지면 테이블에 있는 포트 다  읽어서 변수 저장
+
+        // 이때부터는 그냥 변수만 사용
+        return 8443;
     }
 
     @Transactional
@@ -29,5 +31,14 @@ public class ContainerService {
         Container savedContainer = containerRepository.save(container);
 
         return savedContainer.getId();
+    }
+
+    @Transactional
+    public String removeContainer(Long containerId) {
+        Container container = getContainerById(containerId);
+        String dockerContainerId = container.getDockerContainerId();
+        containerRepository.delete(container);
+
+        return dockerContainerId;
     }
 }

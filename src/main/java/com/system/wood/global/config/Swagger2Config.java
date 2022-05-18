@@ -1,4 +1,4 @@
-package com.system.wood.config;
+package com.system.wood.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

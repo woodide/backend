@@ -9,10 +9,13 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
     show-sql: true
 
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+file:
+  parent-path: /Users/choeseunghwan/Desktop/wood/

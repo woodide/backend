@@ -1,7 +1,7 @@
 package com.system.wood.domain.container;
 
 import com.sun.istack.NotNull;
-import com.system.wood.domain.Member;
+import com.system.wood.domain.member.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,16 +26,30 @@ public class Container {
     @NotNull
     private String containerName;
 
+    @NotNull
+    private String path; // containerName+portNum로 생성
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    public Container(Integer portNum, String dockerContainerId, Member member, String containerName) {
+    public Container(Integer portNum, String dockerContainerId, String containerName, String path, Member member) {
         this.portNum = portNum;
         this.dockerContainerId = dockerContainerId;
         this.containerName = containerName;
+        this.path = path;
         this.member = member;
+    }
+
+    public static Container of(Integer portNum, String dockerContainerId, String containerName, String path, Member member) {
+        return Container.builder()
+                .portNum(portNum)
+                .dockerContainerId(dockerContainerId)
+                .containerName(containerName)
+                .member(member)
+                .path(path)
+                .build();
     }
 
     public void setMember(Member member) {

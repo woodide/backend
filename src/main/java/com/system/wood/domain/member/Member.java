@@ -1,6 +1,7 @@
-package com.system.wood.domain;
+package com.system.wood.domain.member;
 
 import com.sun.istack.NotNull;
+import com.system.wood.domain.Role;
 import com.system.wood.domain.container.Container;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +36,6 @@ public class Member {
     private List<Container> containerList = new ArrayList<>();
 
     @Builder
-
     public Member(String email, String password, String username, Role role) {
         this.email = email;
         this.password = password;
