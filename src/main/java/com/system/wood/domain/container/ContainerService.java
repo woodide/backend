@@ -27,7 +27,6 @@ public class ContainerService {
     @Transactional
     public String removeContainer(Long containerId) {
         Container container = getContainerById(containerId);
-        Integer portNum = container.getPortNum();
         String dockerContainerId = container.getDockerContainerId();
         containerRepository.delete(container);
 

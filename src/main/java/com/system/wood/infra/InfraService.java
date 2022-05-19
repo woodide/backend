@@ -1,17 +1,18 @@
 package com.system.wood.infra;
 
-import com.system.wood.domain.member.Member;
 import com.system.wood.domain.container.Container;
-import com.system.wood.domain.container.ContainerService;
+import com.system.wood.domain.member.Member;
 import com.system.wood.global.error.BusinessException;
 import com.system.wood.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
@@ -27,15 +28,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InfraService {
 
-    private final ContainerService containerService;
-    private static final String stopCommand ="docker stop ";
+    private static final String stop ="docker stop ";
     private static final String rmCommand = "docker rm ";
 
     @Value("${file.parent-path}")
     private String parentPath;
 
     @Transactional
-    public Container createContainer(String containerName, Member member) throws IOException {
+    public Container createContainer(String containerName, Member member) throws IOException, BusinessException {
 
         Integer pgID = 82; // 고민: 나중에 만들 과제 테이블의 id를 저장하자.
         Integer portNum = findFreePort();
@@ -66,19 +66,43 @@ public class InfraService {
         return Container.of(portNum, output, containerName, path,member);
     }
 
-    public void makeDirectory(String parentPath) throws IOException {
-
-        Path path = Paths.get(parentPath);
-        Files.createDirectories(path);
-    }
-
     @Transactional
-    public void deleteContainer(String dockerContainerId) throws IOException {
+    public void deleteContainer(String dockerContainerId, String path) throws IOException {
+        String stopCommand = stop + dockerContainerId;
+        String removeCommand = rmCommand + dockerContainerId;
+
         Process stopProcess = Runtime.getRuntime()
-                .exec(stopCommand+dockerContainerId);
+                .exec(stopCommand);
+        String output = new BufferedReader(new InputStreamReader(stopProcess.getInputStream(), StandardCharsets.UTF_8))
+                .lines().collect(Collectors.joining("\n"));
+        String error = new BufferedReader(new InputStreamReader(stopProcess.getErrorStream(), StandardCharsets.UTF_8))
+                .lines().collect(Collectors.joining("\n"));
+
+        if(error.isEmpty()) {
+            log.info("컨테이너 중지: "+ output);
+        } else {
+            log.info("error message: "+error);
+            log.info("command: "+ stopCommand);
+            throw new BusinessException(ErrorCode.CANNOT_STOP_CONTAINER);
+        }
 
         Process rmProcess = Runtime.getRuntime()
-                .exec(rmCommand+dockerContainerId);
+                .exec(removeCommand);
+        output = new BufferedReader(new InputStreamReader(rmProcess.getInputStream(), StandardCharsets.UTF_8))
+                .lines().collect(Collectors.joining("\n"));
+        error = new BufferedReader(new InputStreamReader(rmProcess.getErrorStream(), StandardCharsets.UTF_8))
+                .lines().collect(Collectors.joining("\n"));
+
+        if(error.isEmpty()) {
+            log.info("컨테이너 삭제: "+ output);
+        } else {
+            log.info("error message: "+error);
+            log.info("command: "+ rmProcess);
+            throw new BusinessException(ErrorCode.CANNOT_KILL_CONTAINER);
+        }
+
+        // 컨테이너에서 사용하던 폴더 삭제
+        deleteDirectory(path);
     }
 
     private String createCommand(Long memberId, Integer pgID, Integer portNum, String containerName) {
@@ -95,6 +119,17 @@ public class InfraService {
                 .append(" -v :" + path + ":/config ")
                 .append(" --restart unless-stopped linuxserver/code-server")
                 .toString();
+    }
+
+    private void makeDirectory(String path) throws IOException {
+
+        Path dirPath = Paths.get(path);
+        Files.createDirectories(dirPath);
+    }
+
+    private void deleteDirectory(String path) throws IOException {
+
+        FileUtils.deleteDirectory(new File(path));
     }
 
     private static int findFreePort() {

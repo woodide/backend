@@ -3,6 +3,8 @@ package com.system.wood.web.container;
 import com.system.wood.domain.member.Member;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.container.ContainerService;
+import com.system.wood.global.error.BusinessException;
+import com.system.wood.global.error.ErrorCode;
 import com.system.wood.infra.InfraService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +28,21 @@ public class WebContainerService {
 
     @Transactional
     public void deleteContainer(Long containerId) throws IOException {
+
+        // 폴더 경로 획득
+        Container container = containerService.getContainerById(containerId);
+        String path = container.getPath();
+
         // db에서 container 정보 삭제
         String dockerContainerId = containerService.removeContainer(containerId);
 
-        // docker container stop & remove
-        infraService.deleteContainer(dockerContainerId);
+        // docker에서 container 삭제 & 컨테이너가 사용한던 폴더를 삭제
+        infraService.deleteContainer(dockerContainerId, path);
+    }
 
-        // todo: 기존에 저장한 폴더 삭제
+    public void validateContainerOwner(Member member, Long containerId) throws BusinessException{
+        if (!member.equals(containerService.getContainerById(containerId).getMember())) {
+            throw new BusinessException(ErrorCode.IS_NOT_OWNER);
+        }
     }
 }

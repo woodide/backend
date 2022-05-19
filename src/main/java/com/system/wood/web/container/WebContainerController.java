@@ -28,8 +28,7 @@ public class WebContainerController {
     @PostMapping("/docker/create")
     public ResponseEntity<ContainerResDto> createContainer(@RequestBody ContainerReqDto containerReuestDto){
 
-        // spring security에서 @AuthenticationPrincipal로 사용하여
-        // UserDetails 객체를 인자로 받을 수 있다.
+        // 로그인한 멤버로 가정
         Member member = memberService.getMember(1000L);
         String containerName = containerReuestDto.getContainerName();
 
@@ -44,15 +43,21 @@ public class WebContainerController {
     }
 
     @PostMapping("/docker/delete")
-    public void deleteContainer(ContainerDelDto containerDeleteDto) {
+    public ResponseEntity<ContainerResDto> deleteContainer(@RequestBody ContainerDelDto containerDeleteDto) {
 
-        // todo: 삭제를 요청하는 유저가 컨테이너를 소유하는지 확인하는 로직이 필요
+        // 로그인한 멤버로 가정
+        Member member = memberService.getMember(2000L);
+
+        // 로그인한 멤버가 컨테이너의 소유자가 아닌 경우에 에러를 던진다.
+        webContainerService.validateContainerOwner(member, containerDeleteDto.getContainerId());
+
         try {
             webContainerService.deleteContainer(containerDeleteDto.getContainerId());
-            // return success
+            return new ResponseEntity<>(ContainerResDto.getSuccess(), HttpStatus.valueOf(204));
         } catch (IOException e) {
             e.printStackTrace();
-            // return fail
+            log.error(e.getMessage());
+            return new ResponseEntity<>(ContainerResDto.getFail(), HttpStatus.valueOf(201));
         }
     }
 }
