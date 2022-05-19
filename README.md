@@ -14,8 +14,14 @@
 
 http://localhost:8080/swagger-ui.html#/     
 
-## 구현 내역 정리
+## API
 
-1. mariadb 연결    
-2. Member, Container 클래스 정의     
-3. swagger 적용     
+1. docker 컨테이너
+
+    * 컨테이너 생성
+    * 컨테이너 삭제
+
+3. 회원가입/로그인
+
+
+
