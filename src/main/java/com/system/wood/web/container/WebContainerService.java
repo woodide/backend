@@ -42,6 +42,7 @@ public class WebContainerService {
 
     public void validateContainerOwner(Member member, Long containerId) throws BusinessException{
         if (!member.equals(containerService.getContainerById(containerId).getMember())) {
+            log.info(String.format("error: member(id:%d)는 컨테이너(id:%d)를 소유하지 않습니다.", member.getId(), containerId));
             throw new BusinessException(ErrorCode.IS_NOT_OWNER);
         }
     }

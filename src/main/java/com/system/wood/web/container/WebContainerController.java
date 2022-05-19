@@ -4,7 +4,8 @@ import com.system.wood.domain.member.Member;
 import com.system.wood.domain.member.MemberService;
 import com.system.wood.web.container.dto.ContainerDelDto;
 import com.system.wood.web.container.dto.ContainerReqDto;
-import com.system.wood.web.container.dto.ContainerResDto;
+import com.system.wood.web.container.dto.ResponseDto;
+import com.system.wood.web.container.dto.ReturnStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class WebContainerController {
 
     @ResponseBody
     @PostMapping("/docker/create")
-    public ResponseEntity<ContainerResDto> createContainer(@RequestBody ContainerReqDto containerReuestDto){
+    public ResponseEntity<ResponseDto> createContainer(@RequestBody ContainerReqDto containerReuestDto){
 
         // 로그인한 멤버로 가정
         Member member = memberService.getMember(1000L);
@@ -34,16 +35,16 @@ public class WebContainerController {
 
         try {
             webContainerService.createContainer(containerName, member);
-            return new ResponseEntity<>(ContainerResDto.getSuccess(), HttpStatus.valueOf(201));
+            return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(201));
         } catch (IOException e) {
             e.printStackTrace();
             log.error(e.getMessage());
-            return new ResponseEntity<>(ContainerResDto.getFail(), HttpStatus.valueOf(201));
+            return new ResponseEntity<>(ResponseDto.of(ReturnStatus.FAIL, e.getMessage()), HttpStatus.valueOf(400));
         }
     }
 
     @PostMapping("/docker/delete")
-    public ResponseEntity<ContainerResDto> deleteContainer(@RequestBody ContainerDelDto containerDeleteDto) {
+    public ResponseEntity<ResponseDto> deleteContainer(@RequestBody ContainerDelDto containerDeleteDto) {
 
         // 로그인한 멤버로 가정
         Member member = memberService.getMember(2000L);
@@ -53,11 +54,11 @@ public class WebContainerController {
 
         try {
             webContainerService.deleteContainer(containerDeleteDto.getContainerId());
-            return new ResponseEntity<>(ContainerResDto.getSuccess(), HttpStatus.valueOf(204));
+            return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(204));
         } catch (IOException e) {
             e.printStackTrace();
             log.error(e.getMessage());
-            return new ResponseEntity<>(ContainerResDto.getFail(), HttpStatus.valueOf(201));
+            return new ResponseEntity<>(ResponseDto.of(ReturnStatus.FAIL, e.getMessage()), HttpStatus.valueOf(400));
         }
     }
 }
