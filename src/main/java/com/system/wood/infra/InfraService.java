@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,7 +38,7 @@ public class InfraService {
     public Container createContainer(String containerName, Member member) throws IOException {
 
         Integer pgID = 82; // 고민: 나중에 만들 과제 테이블의 id를 저장하자.
-        Integer portNum = containerService.getAvailablePortNum();
+        Integer portNum = findFreePort();
         String path = parentPath + containerName + portNum;
 
         // container를 생성하는 command 작성
@@ -54,7 +55,6 @@ public class InfraService {
         String error = new BufferedReader(new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8))
                 .lines().collect(Collectors.joining("\n"));
 
-        // todo: 에러 처리
         if(error.isEmpty()) {
             log.info("컨테이너 생성: "+ output);
         } else {
@@ -95,5 +95,29 @@ public class InfraService {
                 .append(" -v :" + path + ":/config ")
                 .append(" --restart unless-stopped linuxserver/code-server")
                 .toString();
+    }
+
+    private static int findFreePort() {
+        ServerSocket socket = null;
+        try {
+            socket = new ServerSocket(0);
+            socket.setReuseAddress(true);
+            int port = socket.getLocalPort();
+            try {
+                socket.close();
+            } catch (IOException e) {
+                // Ignore IOException on close()
+            }
+            return port;
+        } catch (IOException e) {
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        throw new IllegalStateException("Could not find a free TCP/IP port to start embedded Jetty HTTP Server on");
     }
 }
