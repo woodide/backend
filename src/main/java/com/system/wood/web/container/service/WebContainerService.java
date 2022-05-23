@@ -1,11 +1,11 @@
-package com.system.wood.web.container;
+package com.system.wood.web.container.service;
 
 import com.system.wood.domain.member.Member;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.container.ContainerService;
 import com.system.wood.global.error.BusinessException;
 import com.system.wood.global.error.ErrorCode;
-import com.system.wood.infra.InfraService;
+import com.system.wood.infra.dockercontainer.DockerContainerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class WebContainerService {
     private final ContainerService containerService;
-    private final InfraService infraService;
+    private final DockerContainerService infraService;
 
     @Transactional
     public void createContainer(String containerName, Member member) throws IOException {

@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 @Getter
 @Entity
+@Table(name = "assignment")
 public class Assignment {
 
     @Id @GeneratedValue

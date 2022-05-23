@@ -10,11 +10,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class CustomExceptionHandler{
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ResponseDto> handleBusinessException(BusinessException e) {
         e.printStackTrace();
         return new ResponseEntity<>(ResponseDto.of(ReturnStatus.FAIL, e.getMessage()), HttpStatus.valueOf(e.getStatus()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseDto> handelOtherExceptions(Exception e) {
+        e.printStackTrace();
+        return new ResponseEntity<>(ResponseDto.of(ReturnStatus.FAIL, e.getMessage()), HttpStatus.valueOf(500));
     }
 }

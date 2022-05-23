@@ -1,4 +1,4 @@
-package com.system.wood.infra;
+package com.system.wood.infra.dockercontainer;
 
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.member.Member;
@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class InfraService {
+public class DockerContainerService {
 
     private static final String stop ="docker stop ";
     private static final String rmCommand = "docker rm ";
 
-    @Value("${file.parent-path}")
+    @Value("${file.container-path}")
     private String parentPath;
 
     @Transactional
