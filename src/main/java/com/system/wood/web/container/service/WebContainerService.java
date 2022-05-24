@@ -23,6 +23,8 @@ public class WebContainerService {
     @Transactional
     public void createContainer(String containerName, Member member) throws IOException {
         Container newContainer = infraService.createContainer(containerName, member);
+
+        // todo: 과제에서 기본 세팅 파일을 움직이는 로직이 필요함.
         containerService.save(newContainer);
     }
 

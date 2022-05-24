@@ -17,7 +17,7 @@ public class FileSystemService implements StorageService {
     private String rootLocation;
 
     @Override
-    public void store(MultipartFile file) {
+    public String store(MultipartFile file) {
 
         String fileUploadUrl = rootLocation + createStoreFileName(file.getOriginalFilename());
 
@@ -26,6 +26,8 @@ public class FileSystemService implements StorageService {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
             Files.copy(file.getInputStream(), Path.of(fileUploadUrl));
+
+            return fileUploadUrl;
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
