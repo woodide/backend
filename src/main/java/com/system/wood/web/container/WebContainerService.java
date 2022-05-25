@@ -5,6 +5,7 @@ import com.system.wood.domain.container.Container;
 import com.system.wood.domain.container.ContainerService;
 import com.system.wood.global.error.BusinessException;
 import com.system.wood.global.error.ErrorCode;
+import com.system.wood.infra.DockerCompileService;
 import com.system.wood.infra.InfraService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.io.IOException;
 public class WebContainerService {
     private final ContainerService containerService;
     private final InfraService infraService;
+    private final DockerCompileService dockerCompileService;
 
     @Transactional
     public void createContainer(String containerName, Member member) throws IOException {
@@ -44,6 +46,21 @@ public class WebContainerService {
         if (!member.equals(containerService.getContainerById(containerId).getMember())) {
             log.info(String.format("error: member(id:%d)는 컨테이너(id:%d)를 소유하지 않습니다.", member.getId(), containerId));
             throw new BusinessException(ErrorCode.IS_NOT_OWNER);
+        }
+    }
+
+
+    @Transactional
+    public void buildImage(String lang, String imageName,String version) throws IOException {
+        switch(lang) {
+            case "gcc": {
+                dockerCompileService.GCC(imageName,version);
+                break;
+            }
+            case "python": {
+                dockerCompileService.Python(imageName,version);
+                break;
+            }
         }
     }
 }

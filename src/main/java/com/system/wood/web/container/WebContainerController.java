@@ -8,12 +8,10 @@ import com.system.wood.web.container.dto.ResponseDto;
 import com.system.wood.web.container.dto.ReturnStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -60,5 +58,12 @@ public class WebContainerController {
             log.error(e.getMessage());
             return new ResponseEntity<>(ResponseDto.of(ReturnStatus.FAIL, e.getMessage()), HttpStatus.valueOf(400));
         }
+    }
+
+    @ResponseBody
+    @PostMapping("/docker/build/{lang}")
+    public String deleteContainer(@PathVariable() String lang) throws IOException {
+        webContainerService.buildImage(lang,"test","3.6.8");
+        return "succ";
     }
 }
