@@ -38,3 +38,6 @@ out/
 
 ## custom setting by shwan97 ##
 *.sql
+
+# docker mariaDB
+db-data

@@ -18,4 +18,4 @@ spring:
       matching-strategy: ant_path_matcher
 
 file:
-  parent-path: /Users/choeseunghwan/Desktop/wood/
+  parent-path: /Users/sungyu/Desktop/wood
