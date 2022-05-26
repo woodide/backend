@@ -5,12 +5,8 @@ import com.system.wood.domain.container.Container;
 import com.system.wood.domain.container.ContainerService;
 import com.system.wood.global.error.BusinessException;
 import com.system.wood.global.error.ErrorCode;
-<<<<<<< HEAD:src/main/java/com/system/wood/web/container/service/WebContainerService.java
 import com.system.wood.infra.dockercontainer.DockerContainerService;
-=======
 import com.system.wood.infra.DockerCompileService;
-import com.system.wood.infra.InfraService;
->>>>>>> e8f21e559ae94ca08171988ed533609be3f53a56:src/main/java/com/system/wood/web/container/WebContainerService.java
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
