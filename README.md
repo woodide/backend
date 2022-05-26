@@ -1,5 +1,11 @@
 # 주제
 클라우드 IDE 기반 과제 제출/채점 시스템     
+##  메인 DB 접속
+```sh
+> docker-compose up -d
+> docker ps # mariaDB 컨테이너 아이디 확인
+> docker exec -it ${CONTAINER_ID} /bin/mariadb -u wood -p
+```
 
 ## ERD diagram
 

@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  wood-db:
+    image: mariadb:10.7
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: 1234
+      MARIADB_DATABASE: wood
+      MARIADB_USER: wood
+      MARIADB_PASSWORD: 1234
+    volumes:
+      - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+volumes:
+  db-data:

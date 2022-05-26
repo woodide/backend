@@ -36,7 +36,6 @@ public class DockerContainerService {
 
     @Transactional
     public Container createContainer(String containerName, Member member) throws IOException, BusinessException {
-
         Integer pgID = 82; // 고민: 나중에 만들 과제 테이블의 id를 저장하자.
         Integer portNum = findFreePort();
         String path = parentPath + containerName + portNum;
