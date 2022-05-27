@@ -24,7 +24,7 @@ public class AssignmentController {
     private final MemberService memberService;
 
     @ResponseBody
-    @PostMapping(value = "/api/uploadfile")
+    @PostMapping(value = "/api/setAssignment")
     public ResponseEntity<ResponseDto> registerZipFile(AssignmentReqDto assignmentReqDto) {
 
         Member member = memberService.getMember(1000L);

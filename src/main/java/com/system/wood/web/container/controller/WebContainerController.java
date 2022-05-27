@@ -25,7 +25,7 @@ public class WebContainerController {
     private final MemberService memberService;
 
     @ResponseBody
-    @PostMapping("/docker/create")
+    @PostMapping("/container")
     public ResponseEntity<ResponseDto> createContainer(@RequestBody ContainerReqDto containerReuestDto){
 
         // 로그인한 멤버로 가정
@@ -42,7 +42,7 @@ public class WebContainerController {
         }
     }
 
-    @PostMapping("/docker/delete")
+    @DeleteMapping("/container")
     public ResponseEntity<ResponseDto> deleteContainer(@RequestBody ContainerDelDto containerDeleteDto) {
 
         // 로그인한 멤버로 가정
@@ -63,7 +63,7 @@ public class WebContainerController {
 
     @ResponseBody
     @PostMapping("/docker/build/{lang}")
-    public String deleteContainer(@PathVariable() String lang) throws IOException {
+    public String buildImage(@PathVariable() String lang) throws IOException {
         webContainerService.buildImage(lang,"test","3.6.8");
         return "succ";
     }
