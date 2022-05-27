@@ -115,7 +115,7 @@ public class DockerContainerService {
                 .append(" -e SUDO_PASSWORD=password")
                 .append(" -p ")
                 .append(portNum).append(":8443")
-                .append(" -v :" + path + ":/config ")
+                .append(" -v " + path + ":/config ")
                 .append(" --restart unless-stopped linuxserver/code-server")
                 .toString();
     }
