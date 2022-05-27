@@ -1,4 +1,4 @@
-package com.system.wood.gloabal.config;
+package com.system.wood.global.config;
 
 import com.system.wood.domain.Role;
 import com.system.wood.jwt.AuthenticationEntryPointHandler;
