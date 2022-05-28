@@ -1,7 +1,7 @@
 package com.system.wood.domain.member;
 
-import com.system.wood.domain.Role;
 import com.sun.istack.NotNull;
+import com.system.wood.domain.Role;
 import com.system.wood.domain.container.Container;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +21,8 @@ public class Member {
     @Id @GeneratedValue
     @Column(name = "member_id")
     private Long id;
+
+    private Long classNumber;
 
     @Column(unique = true)
     private String email;

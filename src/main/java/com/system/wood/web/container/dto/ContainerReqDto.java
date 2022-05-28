@@ -8,4 +8,7 @@ public class ContainerReqDto {
 
     @NotNull
     private String containerName;
+
+    @NotNull
+    private String lang;
 }

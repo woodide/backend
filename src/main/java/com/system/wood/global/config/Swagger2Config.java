@@ -1,8 +1,4 @@
-<<<<<<< HEAD:src/main/java/com/system/wood/gloabal/config/Swagger2Config.java
-package com.system.wood.gloabal.config;
-=======
 package com.system.wood.global.config;
->>>>>>> e8f21e559ae94ca08171988ed533609be3f53a56:src/main/java/com/system/wood/global/config/Swagger2Config.java
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
