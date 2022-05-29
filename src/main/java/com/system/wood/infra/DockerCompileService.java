@@ -1,5 +1,7 @@
 package com.system.wood.infra;
 
+import com.system.wood.global.error.BusinessException;
+import com.system.wood.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class DockerCompileService {
     @Value("${file.parent-path}")
     private String parentPath;
 
-    public void GCC(String imageName, String version) throws IOException  {
+    public void GCC(String imageName, String version) throws Exception {
         String body =  "FROM linuxserver/code-server\n" +
                 "RUN sudo apt-get update\n" +
                 "RUN sudo apt-get install -y make build-essential software-properties-common\n" +
@@ -37,15 +39,14 @@ public class DockerCompileService {
                 "RUN sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${VERSION} 60 --slave /usr/bin/g++ g++ /usr/bin/g++-${VERSION}";
         makeDockerfile(body);
         String cmd = makeBuildCommand(imageName);
+        System.out.println("cmd " + cmd);
         runBuild(cmd);
     }
 
-    public void Python(String imageName, String version) throws IOException {
+    public void Python(String imageName, String version) throws Exception {
         String body = "FROM linuxserver/code-server\n" +
                 "RUN sudo apt-get update\n" +
-                "RUN sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \\\n" +
-                "    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \\\n" +
-                "    xz-utils tk-dev\n" +
+                "RUN sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev\n" +
                 "ENV HOME=\"/config\"\n" +
                 String.format("ENV PYTHON_VERSION=%s\n",version) +
                 "ENV SKELETON_CODE /home/skeleton/pa2.c\n" +
@@ -60,6 +61,7 @@ public class DockerCompileService {
                 "RUN pyenv global ${PYTHON_VERSION}\n";
         makeDockerfile(body);
         String cmd = makeBuildCommand(imageName);
+        System.out.println("cmd " + cmd);
         runBuild(cmd);
     }
 
@@ -68,28 +70,35 @@ public class DockerCompileService {
         Path dirPath = Paths.get(parentPath , "build");
         if(!Files.isDirectory(dirPath))
             Files.createDirectory(dirPath);
-        Path filePath = Paths.get(parentPath , "build", "DockerFile");
+        Path filePath = Paths.get(parentPath , "build", "Dockerfile");
         Files.writeString(filePath, dockerBody, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
 
-    public String runBuild(String command) {
-        Process process = null;
-        try {
-            process = Runtime.getRuntime()
-                    .exec(command);
-            String output = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))
-                    .lines().collect(Collectors.joining("\n"));
-            return output;
-        } catch (IOException e) {
-            String error = new BufferedReader(new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8))
-                    .lines().collect(Collectors.joining("\n"));
-            return error;
+    public boolean runBuild(String command) throws Exception {
+        Process process = Runtime.getRuntime()
+                .exec(command);
+        BufferedReader stdError = new BufferedReader(new
+                InputStreamReader(process.getErrorStream()));
+        System.out.println("Here is the standard output of the command:\n");
+        String s = null;
+        boolean isSuccess = false;
+        while ((s = stdError.readLine()) != null) {
+            System.out.println(s);
+            if(s.contains("exporting to image")) { // 이미지 빌드 끝
+                isSuccess = true;
+            }
+        }
+        if(isSuccess) {
+            return true;
+        }
+        else {
+            throw new Exception("Docker Build Error");
         }
     }
 
     public String makeBuildCommand(String imageName) {
-        return new StringBuilder().append("docker build --tag ").append(imageName).append(" . ").toString();
+        return new StringBuilder().append("docker build --no-cache --tag ").append(imageName).append(" ").append(Paths.get(parentPath , "build")).toString();
     }
 
 }

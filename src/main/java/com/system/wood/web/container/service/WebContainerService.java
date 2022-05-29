@@ -53,7 +53,7 @@ public class WebContainerService {
 
 
     @Transactional
-    public void buildImage(String lang, String imageName,String version) throws IOException {
+    public void buildImage(String lang, String imageName,String version) throws Exception {
         switch(lang) {
             case "gcc": {
                 dockerCompileService.GCC(imageName,version);
