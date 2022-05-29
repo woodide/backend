@@ -1,4 +1,4 @@
-package com.system.wood.web.member;
+package com.system.wood.web.member.controller;
 
 import com.system.wood.domain.member.Member;
 import com.system.wood.jwt.JwtTokenProvider;
@@ -6,7 +6,8 @@ import com.system.wood.jwt.UserAuthentication;
 import com.system.wood.domain.Role;
 import com.system.wood.domain.signup.SignupWaiting;
 import com.system.wood.domain.Token;
-import com.system.wood.web.signup.SignupWaitingService;
+import com.system.wood.web.member.service.MemberService;
+import com.system.wood.web.signup.service.SignupWaitingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,8 @@ import java.util.List;
 @RestController
 public class MemberController {
 
-    @Autowired MemberService memberService;
+    @Autowired
+    MemberService memberService;
     @Autowired
     SignupWaitingService signupWaitingService;
 

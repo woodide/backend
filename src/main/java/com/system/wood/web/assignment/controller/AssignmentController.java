@@ -2,10 +2,10 @@ package com.system.wood.web.assignment.controller;
 
 import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.member.Member;
-import com.system.wood.domain.member.MemberService;
 import com.system.wood.infra.storage.StorageService;
 import com.system.wood.web.assignment.dto.AssignmentReqDto;
 import com.system.wood.web.container.dto.ResponseDto;
+import com.system.wood.web.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,8 @@ public class AssignmentController {
     @PostMapping(value = "/api/setAssignment")
     public ResponseEntity<ResponseDto> registerZipFile(AssignmentReqDto assignmentReqDto) {
 
-        Member member = memberService.getMember(1000L);
+        // TODO: 로그인 가정 JWT 가드 붙이고 해제
+        Member member = memberService.findOneById(Long.valueOf(0));
 
         // 파일을 저장장치에 저장
         String uploadUrl = storageService.store(assignmentReqDto.getMultipartFile());

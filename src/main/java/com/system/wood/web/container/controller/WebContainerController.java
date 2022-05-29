@@ -1,15 +1,14 @@
 package com.system.wood.web.container.controller;
 
 import com.system.wood.domain.member.Member;
-import com.system.wood.domain.member.MemberService;
 import com.system.wood.web.container.service.WebContainerService;
 import com.system.wood.web.container.dto.ContainerDelDto;
 import com.system.wood.web.container.dto.ContainerReqDto;
 import com.system.wood.web.container.dto.ResponseDto;
 import com.system.wood.web.container.dto.ReturnStatus;
+import com.system.wood.web.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +27,8 @@ public class WebContainerController {
     @PostMapping("/container")
     public ResponseEntity<ResponseDto> createContainer(@RequestBody ContainerReqDto containerReuestDto){
 
-        // 로그인한 멤버로 가정
-        Member member = memberService.getMember(1000L);
+        // TODO: 로그인 가정 JWT 가드 붙이고 해제
+        Member member = memberService.findOneById(Long.valueOf(0));
         String containerName = containerReuestDto.getContainerName();
 
         try {
@@ -45,8 +44,8 @@ public class WebContainerController {
     @DeleteMapping("/container")
     public ResponseEntity<ResponseDto> deleteContainer(@RequestBody ContainerDelDto containerDeleteDto) {
 
-        // 로그인한 멤버로 가정
-        Member member = memberService.getMember(2000L);
+        // TODO: 로그인 가정 JWT 가드 붙이고 해제
+        Member member = memberService.findOneById(Long.valueOf(0));
 
         // 로그인한 멤버가 컨테이너의 소유자가 아닌 경우에 에러를 던진다.
         webContainerService.validateContainerOwner(member, containerDeleteDto.getContainerId());

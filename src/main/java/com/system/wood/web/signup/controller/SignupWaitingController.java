@@ -1,7 +1,8 @@
-package com.system.wood.web.signup;
+package com.system.wood.web.signup.controller;
 
 import com.system.wood.domain.member.Member;
 import com.system.wood.domain.signup.SignupWaiting;
+import com.system.wood.web.signup.service.SignupWaitingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

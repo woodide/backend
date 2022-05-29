@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DockerContainerService {
-
     private static final String stop ="docker stop ";
     private static final String rmCommand = "docker rm ";
 

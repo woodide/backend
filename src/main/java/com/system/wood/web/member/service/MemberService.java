@@ -1,4 +1,4 @@
-package com.system.wood.web.member;
+package com.system.wood.web.member.service;
 
 import com.system.wood.domain.member.Member;
 import com.system.wood.domain.signup.SignupWaiting;
@@ -25,6 +25,11 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
         this.signupWaitingRepository = signupWaitingRepository;
     }
+
+    public Member findOneById(Long Id){ return memberRepository.findOneById(Id);}
+
+    public Optional<Member> findByUsername(String username){ return memberRepository.findByUsername(username);}
+
     public Optional<Member> findByIdPw(String email){ return memberRepository.findByEmail(email);}
 
     public List<Member> findAll(){

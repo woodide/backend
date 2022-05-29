@@ -5,5 +5,5 @@ spring:
     password: 1234
 
 file:
-  container-path: /Users/choeseunghwan/Desktop/wood/containers/
-  uploadfile-path: /Users/choeseunghwan/Desktop/wood/uploadFiles/
+  container-path: /Users/sungyu/Desktop/wood/container
+  uploadfile-path: /Users/sungyu/Desktop/wood/upload

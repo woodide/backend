@@ -23,7 +23,6 @@ public class DockerCompileService {
     @Value("${file.parent-path}")
     private String parentPath;
 
-
     public void GCC(String imageName, String version) throws IOException  {
         String body =  "FROM linuxserver/code-server\n" +
                 "RUN sudo apt-get update\n" +

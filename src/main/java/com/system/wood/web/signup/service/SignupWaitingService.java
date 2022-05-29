@@ -1,4 +1,4 @@
-package com.system.wood.web.signup;
+package com.system.wood.web.signup.service;
 
 import com.system.wood.domain.member.Member;
 import com.system.wood.domain.member.MemberRepository;
