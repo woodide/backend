@@ -1,9 +1,8 @@
 package com.system.wood.jwt;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -12,11 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
-@RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -24,8 +20,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request); //request에서 jwt 토큰을 꺼낸다.
 
-            if (!jwt.isEmpty() && jwtTokenProvider.validateToken(jwt)) {
-                String userId = jwtTokenProvider.getUserIdFromJWT(jwt); //jwt에서 사용자 id를 꺼낸다.
+            if (!jwt.isEmpty() && JwtTokenProvider.validateToken(jwt)) {
+                String userId = JwtTokenProvider.getUserIdFromJWT(jwt); //jwt에서 사용자 id를 꺼낸다.
 
                 UserAuthentication authentication = new UserAuthentication(userId, null, null); //id를 인증한다.
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); //기본적으로 제공한 details 세팅
@@ -36,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     request.setAttribute("unauthorization", "401 인증키 없음.");
                 }
 
-                if (jwtTokenProvider.validateToken(jwt)) {
+                if (JwtTokenProvider.validateToken(jwt)) {
                     request.setAttribute("unauthorization", "401-001 인증키 만료.");
                 }
             }
