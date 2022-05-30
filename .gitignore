@@ -38,6 +38,7 @@ out/
 
 ## custom setting by shwan97 ##
 *.sql
+/src/main/resources/application-shwan.yml
 
 # docker mariaDB
 db-data
