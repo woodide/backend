@@ -25,6 +25,6 @@ spring:
       matching-strategy: ant_path_matcher
 
 file:
-  parent-path: /Users/sungyu/Desktop/wood
-  container-path: /Users/sungyu/Desktop/wood/container
-  uploadfile-path: /Users/sungyu/Desktop/wood/upload
+  dockerImage-path: /Users/sungyu/Desktop/wood/build/
+  container-path: /Users/sungyu/Desktop/wood/container/
+  uploadfile-path: /Users/sungyu/Desktop/wood/upload/

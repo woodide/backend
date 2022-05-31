@@ -19,15 +19,15 @@ public class FileSystemService implements StorageService {
     @Override
     public String store(MultipartFile file) {
 
-        String fileUploadUrl = rootLocation + createStoreFileName(file.getOriginalFilename());
+        Path fileUploadUrl = Path.of(rootLocation + createStoreFileName(file.getOriginalFilename()));
 
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
-            Files.copy(file.getInputStream(), Path.of(fileUploadUrl));
+            Files.copy(file.getInputStream(), fileUploadUrl);
 
-            return fileUploadUrl;
+            return fileUploadUrl.toString();
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
