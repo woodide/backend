@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -59,22 +60,29 @@ public class MemberController {
         try {
             Member member = memberService.login(request);
             if(member==null) throw new Exception("user not found");
-//            List<GrantedAuthority> role = new ;
-//            role.add("ROLE_" + member.getRole());
-            Authentication authentication = new UserAuthentication(request.getEmail(), null, null);
-            String token = JwtTokenProvider.generateToken(authentication);
+            String token = JwtTokenProvider.generateToken(member.getEmail(), member.getRole().toString());
             return new ResponseEntity<>(token, HttpStatus.OK);
         }
         catch (Exception e){
             throw e;
         }
     }
-    @GetMapping("jwtCheck")
-    public String jwtCheck(){
+
+    @GetMapping("professor")
+    public String professor(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        System.out.println(authentication.getPrincipal());
-//        return authentication.toString();
-        return (String) authentication.getPrincipal();
+        return authentication.toString();
     }
 
+    @GetMapping("student")
+    public String student(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.toString();
+    }
+
+    @GetMapping("any")
+    public String any(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.toString();
+    }
 }
