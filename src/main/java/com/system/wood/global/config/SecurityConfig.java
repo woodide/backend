@@ -34,14 +34,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement() //(4)
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .exceptionHandling()
+                    .authenticationEntryPoint(authenticationEntryPointHandler)
             .and()
-            .exceptionHandling().authenticationEntryPoint(authenticationEntryPointHandler)
+                .authorizeRequests()
+                    .antMatchers("/professor").hasRole("PROFESSOR")
+                    .antMatchers("/student").hasAnyRole("PROFESSOR","STUDENT")
+                    .anyRequest().permitAll()
             .and()
-//            .authorizeRequests()
-//            .antMatchers("/jwtCheck").hasRole("PROFESSOR")
-//            .and()
-            .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .formLogin().disable().headers().frameOptions().disable();
     }
 
