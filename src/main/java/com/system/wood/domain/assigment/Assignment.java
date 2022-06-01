@@ -1,11 +1,14 @@
 package com.system.wood.domain.assigment;
 
 import com.system.wood.domain.member.Member;
+import com.system.wood.domain.testcase.Testcase;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -34,6 +37,9 @@ public class Assignment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member creator; // ROLE가 PROFESSOR인 멤버만이 출제자가 될 수 있다.
+
+    @OneToMany(mappedBy = "assignment")
+    private List<Testcase> testcaseList = new ArrayList<>();
 
     @Builder
     public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageUrl, Member creator) {

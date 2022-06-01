@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 public interface StorageService {
 
-    String store(MultipartFile file);
+    String storeTestcase(MultipartFile file);
 
     String unzipFile(MultipartFile zipFile);
 }

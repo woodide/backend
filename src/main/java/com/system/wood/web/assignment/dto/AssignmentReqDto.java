@@ -25,6 +25,10 @@ public class AssignmentReqDto {
 
     private MultipartFile multipartFile;
 
+    private MultipartFile testInput;
+
+    private MultipartFile testOutput;
+
     public Assignment toEntity(String uploadUrl, String imageUrl, Member creator) {
         return Assignment.builder()
                 .assignmentName(assignmentName)

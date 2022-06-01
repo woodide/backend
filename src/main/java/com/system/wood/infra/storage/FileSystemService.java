@@ -25,10 +25,13 @@ public class FileSystemService implements StorageService {
     @Value("${file.uploadfile-path}")
     private String rootLocation;
 
-    @Override
-    public String store(MultipartFile file) {
+    @Value("${file.testcase-path}")
+    private String testcasePath;
 
-        Path fileUploadUrl = Path.of(rootLocation + createStoreFileName(file.getOriginalFilename()));
+    @Override
+    public String storeTestcase(MultipartFile file) {
+
+        Path fileUploadUrl = Path.of(testcasePath + createStoreFileName(file.getOriginalFilename()));
 
         try {
             if (file.isEmpty()) {
@@ -118,7 +121,10 @@ public class FileSystemService implements StorageService {
     private String createStoreFileName(String originalFilename) {
         String uuid = UUID.randomUUID().toString();
         String ext = extractExt(originalFilename);
-        return uuid + "." + ext;
+        if(ext.isEmpty())
+            return uuid;
+        else
+            return uuid + "." + ext;
     }
 
     private String deleteExt(String originalFilename) {
@@ -128,6 +134,9 @@ public class FileSystemService implements StorageService {
 
     private String extractExt(String originalFilename) {
         int pos = originalFilename.lastIndexOf(".");
-        return originalFilename.substring(pos + 1);
+        if(pos == -1)
+            return "";
+        else
+            return originalFilename.substring(pos + 1);
     }
 }

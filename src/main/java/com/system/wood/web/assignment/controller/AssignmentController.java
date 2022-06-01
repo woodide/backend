@@ -1,7 +1,10 @@
 package com.system.wood.web.assignment.controller;
 
+import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.member.Member;
+import com.system.wood.domain.testcase.Testcase;
+import com.system.wood.domain.testcase.TestcaseService;
 import com.system.wood.infra.storage.StorageService;
 import com.system.wood.web.assignment.dto.AssignmentReqDto;
 import com.system.wood.web.container.dto.ResponseDto;
@@ -31,6 +34,7 @@ public class AssignmentController {
     private final AssignmentService assignmentService;
     private final MemberService memberService;
     private final WebContainerService webContainerService;
+    private final TestcaseService testcaseService;
 
     @Value("${file.dockerImage-path}")
     private String imagePath;
@@ -42,6 +46,10 @@ public class AssignmentController {
         // TODO: 로그인 가정 JWT 가드 붙이고 해제
         Member member = memberService.findOneById(Long.valueOf(0));
 
+        // 하드디스크에 테스트케이스 저장
+        String inputUrl = storageService.storeTestcase(assignmentReqDto.getTestInput());
+        String outputUrl = storageService.storeTestcase(assignmentReqDto.getTestOutput());
+
         // 하드디스크에 스켈레톤코드 저장
         String uploadUrl = storageService.unzipFile(assignmentReqDto.getMultipartFile());
 
@@ -50,23 +58,30 @@ public class AssignmentController {
         String imageUrl = imagePath + imageStoredName;
         webContainerService.buildImage(assignmentReqDto.getLanguage(), imageStoredName,assignmentReqDto.getLanguageVersion());
 
-        // db에 과제 정보 저장
-        assignmentService.save(assignmentReqDto.toEntity(uploadUrl, imageUrl, member));
+        // db에 과제와 테스트케이스 정보 저장
+        Assignment savedAssignment = assignmentService.save(assignmentReqDto.toEntity(uploadUrl, imageUrl, member));
+        testcaseService.save(new Testcase(inputUrl, outputUrl, savedAssignment));
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(200));
     }
-//
-//    @ResponseBody
-//    @PostMapping(value = "/any/test")
-//    public ResponseEntity<ResponseDto> isArchive(TestDto testDto) throws Exception {
-//
-//        String target = storageService.unzipFile(testDto.getMultipartFile());
-//        log.info(target);
-//        return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(200));
-//    }
-//
-//    @Getter
-//    @Setter
-//    static class TestDto{
-//        private MultipartFile multipartFile;
-//    }
+
+    @ResponseBody
+    @PostMapping(value = "/any/test")
+    public ResponseEntity<ResponseDto> isArchive(TestDto testDto) throws Exception {
+        // 하드디스크에 테스트케이스 저장
+        String inputUrl = storageService.storeTestcase(testDto.getInput());
+        String outputUrl = storageService.storeTestcase(testDto.getOutput());
+
+        // db에 테스트케이스 정보 저장
+        Assignment savedAssignment = assignmentService.getAssignment(1L);
+        testcaseService.save(new Testcase(inputUrl, outputUrl, savedAssignment));
+
+        return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(200));
+    }
+
+    @Getter
+    @Setter
+    static class TestDto{
+        private MultipartFile input;
+        private MultipartFile output;
+    }
 }
