@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -25,10 +26,9 @@ public class WebContainerController {
 
     @ResponseBody
     @PostMapping("/container")
-    public ResponseEntity<ResponseDto> createContainer(@RequestBody ContainerReqDto containerReuestDto){
+    public ResponseEntity<ResponseDto> createContainer(@AuthenticationPrincipal String email, @RequestBody ContainerReqDto containerReuestDto){
 
-        // TODO: 로그인 가정 JWT 가드 붙이고 해제
-        Student student = userService.findOneById(Long.valueOf(0));
+        Student student = userService.findStudent(email);
         String containerName = containerReuestDto.getContainerName();
 
         try {
@@ -42,13 +42,12 @@ public class WebContainerController {
     }
 
     @DeleteMapping("/container")
-    public ResponseEntity<ResponseDto> deleteContainer(@RequestBody ContainerDelDto containerDeleteDto) {
+    public ResponseEntity<ResponseDto> deleteContainer(@AuthenticationPrincipal String email, @RequestBody ContainerDelDto containerDeleteDto) {
 
-        // TODO: 로그인 가정 JWT 가드 붙이고 해제
-        Student user = userService.findOneById(Long.valueOf(0));
+        Student student = userService.findStudent(email);
 
         // 로그인한 멤버가 컨테이너의 소유자가 아닌 경우에 에러를 던진다.
-        webContainerService.validateContainerOwner(user, containerDeleteDto.getContainerId());
+        webContainerService.validateContainerOwner(student, containerDeleteDto.getContainerId());
 
         try {
             webContainerService.deleteContainer(containerDeleteDto.getContainerId());
