@@ -1,6 +1,7 @@
 package com.system.wood.web.assignment.dto;
 
 import com.system.wood.domain.assigment.Assignment;
+import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import javax.persistence.Lob;
 
 @Getter
 @Setter
-public class AssignmentReqDto {
+public class AssignmentReqDto2 {
 
     @Column(nullable = false)
     private String assignmentName;
@@ -30,6 +31,8 @@ public class AssignmentReqDto {
     private String expectedResult;
 
     private MultipartFile multipartFile;
+
+    private Long subjectId;
 
     public Assignment toEntity(String uploadUrl, User creator) {
         return Assignment.builder()
