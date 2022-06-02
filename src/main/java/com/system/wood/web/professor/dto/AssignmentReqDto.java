@@ -1,4 +1,4 @@
-package com.system.wood.web.assignment.dto;
+package com.system.wood.web.professor.dto;
 
 import com.system.wood.domain.assigment.Assignment;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.system.wood.web.container.controller;
 
-import com.system.wood.domain.user.User;
+import com.system.wood.domain.student.Student;
 import com.system.wood.web.container.service.WebContainerService;
 import com.system.wood.web.container.dto.ContainerDelDto;
 import com.system.wood.web.container.dto.ContainerReqDto;
@@ -28,11 +28,11 @@ public class WebContainerController {
     public ResponseEntity<ResponseDto> createContainer(@RequestBody ContainerReqDto containerReuestDto){
 
         // TODO: 로그인 가정 JWT 가드 붙이고 해제
-        User user = userService.findOneById(Long.valueOf(0));
+        Student student = userService.findOneById(Long.valueOf(0));
         String containerName = containerReuestDto.getContainerName();
 
         try {
-            webContainerService.createContainer(containerName, user);
+            webContainerService.createContainer(containerName, student);
             return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(201));
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,7 +45,7 @@ public class WebContainerController {
     public ResponseEntity<ResponseDto> deleteContainer(@RequestBody ContainerDelDto containerDeleteDto) {
 
         // TODO: 로그인 가정 JWT 가드 붙이고 해제
-        User user = userService.findOneById(Long.valueOf(0));
+        Student user = userService.findOneById(Long.valueOf(0));
 
         // 로그인한 멤버가 컨테이너의 소유자가 아닌 경우에 에러를 던진다.
         webContainerService.validateContainerOwner(user, containerDeleteDto.getContainerId());

@@ -1,21 +1,21 @@
-package com.system.wood.domain.usertosubject;
+package com.system.wood.domain.studtosubj;
 
 import com.system.wood.domain.subject.Subject;
-import com.system.wood.domain.user.User;
+import com.system.wood.domain.student.Student;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user_to_subj")
-public class UserToSubj {
+@Table(name = "stud_to_subj")
+public class StudToSubj {
 
     @Id @GeneratedValue
-    @Column(name = "user_to_subj_id")
+    @Column(name = "stud_to_subj_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "student_id")
+    private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")

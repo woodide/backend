@@ -1,7 +1,7 @@
 package com.system.wood.domain.container;
 
 import com.sun.istack.NotNull;
-import com.system.wood.domain.user.User;
+import com.system.wood.domain.student.Student;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,28 +31,28 @@ public class Container {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Student student;
 
     @Builder
-    public Container(Integer portNum, String dockerContainerId, String containerName, String path, User user) {
+    public Container(Integer portNum, String dockerContainerId, String containerName, String path, Student student) {
         this.portNum = portNum;
         this.dockerContainerId = dockerContainerId;
         this.containerName = containerName;
         this.path = path;
-        this.user = user;
+        this.student = student;
     }
 
-    public static Container of(Integer portNum, String dockerContainerId, String containerName, String path, User user) {
+    public static Container of(Integer portNum, String dockerContainerId, String containerName, String path, Student student) {
         return Container.builder()
                 .portNum(portNum)
                 .dockerContainerId(dockerContainerId)
                 .containerName(containerName)
-                .user(user)
+                .student(student)
                 .path(path)
                 .build();
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Student student) {
+        this.student = student;
     }
 }
