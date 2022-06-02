@@ -1,7 +1,5 @@
 package com.system.wood.infra;
 
-import com.system.wood.global.error.BusinessException;
-import com.system.wood.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,20 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DockerCompileService {
 
-    @Value("${file.parent-path}")
-    private String parentPath;
+    @Value("${file.dockerImage-path}")
+    private String imagePath;
 
     public void GCC(String imageName, String version) throws Exception {
         String body =  "FROM linuxserver/code-server\n" +
@@ -37,7 +33,7 @@ public class DockerCompileService {
                 "\n" +
                 "RUN sudo apt-get install -y gcc-${VERSION}\n" +
                 "RUN sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${VERSION} 60 --slave /usr/bin/g++ g++ /usr/bin/g++-${VERSION}";
-        makeDockerfile(body);
+        makeDockerfile(body, imageName);
         String cmd = makeBuildCommand(imageName);
         System.out.println("cmd " + cmd);
         runBuild(cmd);
@@ -59,18 +55,18 @@ public class DockerCompileService {
                 "\n" +
                 "RUN pyenv install ${PYTHON_VERSION}\n" +
                 "RUN pyenv global ${PYTHON_VERSION}\n";
-        makeDockerfile(body);
+        makeDockerfile(body, imageName);
         String cmd = makeBuildCommand(imageName);
         System.out.println("cmd " + cmd);
         runBuild(cmd);
     }
 
 
-    private void makeDockerfile(String dockerBody) throws IOException {
-        Path dirPath = Paths.get(parentPath , "build");
+    private void makeDockerfile(String dockerBody, String imageName) throws IOException {
+        Path dirPath = Paths.get(imagePath);
         if(!Files.isDirectory(dirPath))
             Files.createDirectory(dirPath);
-        Path filePath = Paths.get(parentPath , "build", "Dockerfile");
+        Path filePath = Paths.get(imagePath, imageName);
         Files.writeString(filePath, dockerBody, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
@@ -98,7 +94,6 @@ public class DockerCompileService {
     }
 
     public String makeBuildCommand(String imageName) {
-        return new StringBuilder().append("docker build --no-cache --tag ").append(imageName).append(" ").append(Paths.get(parentPath , "build")).toString();
+        return new StringBuilder().append("docker build --no-cache --tag ").append(imageName).append(" ").append(Paths.get(imagePath, "build")).toString();
     }
-
 }

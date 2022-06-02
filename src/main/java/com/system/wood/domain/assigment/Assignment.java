@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -13,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Assignment {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "assignment_id")
     private Long id;
 
@@ -27,22 +29,25 @@ public class Assignment {
 
     private String languageVersion;
 
-    @Lob
-    private String testcase;
-
-    @Lob
-    private String expectedResult;
-
     private String uploadUrl; // skeleton code를 업로드한 경로
 
+    private String imageUrl; // docker image를 업로드한 경로
+
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "member_id")
+    // private Member creator; // ROLE가 PROFESSOR인 멤버만이 출제자가 될 수 있다.
+
+    @OneToMany(mappedBy = "assignment")
+    private List<Testcase> testcaseList = new ArrayList<>();
+
     @Builder
-    public Assignment(String assignmentName, String description, String language, String languageVersion, String testcase, String expectedResult, String uploadUrl, User creator) {
+    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageUrl, Member creator) {
         this.assignmentName = assignmentName;
         this.description = description;
         this.language = language;
         this.languageVersion = languageVersion;
-        this.testcase = testcase;
-        this.expectedResult = expectedResult;
         this.uploadUrl = uploadUrl;
+        this.imageUrl = imageUrl;
+        this.creator = creator;
     }
 }

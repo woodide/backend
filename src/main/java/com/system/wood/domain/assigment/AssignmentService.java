@@ -11,9 +11,9 @@ public class AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
 
-    public Long save(Assignment assignment) {
+    public Assignment save(Assignment assignment) {
         Assignment savedAssignment = assignmentRepository.save(assignment);
-        return savedAssignment.getId();
+        return savedAssignment;
     }
 
     public void delete(Long assignmentId) {
@@ -23,5 +23,12 @@ public class AssignmentService {
             throw new EntityNotFoundException(
                     String.format("id가 %d인 과제가 존재하지 않습니다.", assignmentId)
             );
+    }
+
+    public Assignment getAssignment(Long id) {
+        return assignmentRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException(
+                        String.format("id가 %d인 과제가 존재하지 않습니다.", id)
+                ));
     }
 }

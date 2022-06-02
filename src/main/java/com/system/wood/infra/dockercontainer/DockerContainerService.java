@@ -31,13 +31,13 @@ public class DockerContainerService {
     private static final String rmCommand = "docker rm ";
 
     @Value("${file.container-path}")
-    private String parentPath;
+    private String containerPath;
 
     @Transactional
     public Container createContainer(String containerName, User user) throws IOException, BusinessException {
         Integer pgID = 82; // 고민: 나중에 만들 과제 테이블의 id를 저장하자.
         Integer portNum = findFreePort();
-        String path = parentPath + containerName + portNum;
+        String path = containerPath + containerName + portNum;
 
         // container를 생성하는 command 작성
         String command = createCommand(user.getId(), pgID, portNum, containerName);
@@ -104,7 +104,7 @@ public class DockerContainerService {
     }
 
     private String createCommand(Long memberId, Integer pgID, Integer portNum, String containerName) {
-        String path = parentPath + containerName + portNum;
+        String path = containerPath + containerName + portNum;
 
         return new StringBuilder().append("docker run -d --name=")
                 .append(containerName)

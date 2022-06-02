@@ -23,24 +23,20 @@ public class AssignmentReqDto {
 
     private String languageVersion;
 
-    @Lob
-    private String testcase;
-
-    @Lob
-    private String expectedResult;
-
     private MultipartFile multipartFile;
 
-    public Assignment toEntity(String uploadUrl, User creator) {
+    private MultipartFile testInput;
+
+    private MultipartFile testOutput;
+
+    public Assignment toEntity(String uploadUrl, String imageUrl) {
         return Assignment.builder()
                 .assignmentName(assignmentName)
                 .description(description)
                 .language(language)
                 .languageVersion(languageVersion)
-                .testcase(testcase)
-                .expectedResult(expectedResult)
                 .uploadUrl(uploadUrl)
-                .creator(creator)
+                .imageUrl(imageUrl)
                 .build();
     }
 }

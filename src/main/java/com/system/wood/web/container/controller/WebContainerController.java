@@ -60,11 +60,5 @@ public class WebContainerController {
         }
     }
 
-    @ResponseBody
-    @PostMapping("/docker/build/{lang}")
-    public String buildImage(@PathVariable() String lang) throws Exception {
-        // 약 5분 소요
-        webContainerService.buildImage(lang,"test","7");
-        return "succ";
-    }
+
 }
