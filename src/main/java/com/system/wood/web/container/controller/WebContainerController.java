@@ -1,12 +1,12 @@
 package com.system.wood.web.container.controller;
 
-import com.system.wood.domain.member.Member;
+import com.system.wood.domain.user.User;
 import com.system.wood.web.container.service.WebContainerService;
 import com.system.wood.web.container.dto.ContainerDelDto;
 import com.system.wood.web.container.dto.ContainerReqDto;
 import com.system.wood.web.container.dto.ResponseDto;
 import com.system.wood.web.container.dto.ReturnStatus;
-import com.system.wood.web.member.service.MemberService;
+import com.system.wood.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,18 +21,18 @@ import java.io.IOException;
 public class WebContainerController {
 
     private final WebContainerService webContainerService;
-    private final MemberService memberService;
+    private final UserService userService;
 
     @ResponseBody
     @PostMapping("/container")
     public ResponseEntity<ResponseDto> createContainer(@RequestBody ContainerReqDto containerReuestDto){
 
         // TODO: 로그인 가정 JWT 가드 붙이고 해제
-        Member member = memberService.findOneById(Long.valueOf(0));
+        User user = userService.findOneById(Long.valueOf(0));
         String containerName = containerReuestDto.getContainerName();
 
         try {
-            webContainerService.createContainer(containerName, member);
+            webContainerService.createContainer(containerName, user);
             return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(201));
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,10 +45,10 @@ public class WebContainerController {
     public ResponseEntity<ResponseDto> deleteContainer(@RequestBody ContainerDelDto containerDeleteDto) {
 
         // TODO: 로그인 가정 JWT 가드 붙이고 해제
-        Member member = memberService.findOneById(Long.valueOf(0));
+        User user = userService.findOneById(Long.valueOf(0));
 
         // 로그인한 멤버가 컨테이너의 소유자가 아닌 경우에 에러를 던진다.
-        webContainerService.validateContainerOwner(member, containerDeleteDto.getContainerId());
+        webContainerService.validateContainerOwner(user, containerDeleteDto.getContainerId());
 
         try {
             webContainerService.deleteContainer(containerDeleteDto.getContainerId());

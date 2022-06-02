@@ -1,7 +1,6 @@
 package com.system.wood.domain.assigment;
 
-import com.system.wood.domain.member.Member;
-import com.system.wood.domain.testcase.Testcase;
+import com.system.wood.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,9 +33,9 @@ public class Assignment {
 
     private String imageUrl; // docker image를 업로드한 경로
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member creator; // ROLE가 PROFESSOR인 멤버만이 출제자가 될 수 있다.
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "member_id")
+    // private Member creator; // ROLE가 PROFESSOR인 멤버만이 출제자가 될 수 있다.
 
     @OneToMany(mappedBy = "assignment")
     private List<Testcase> testcaseList = new ArrayList<>();

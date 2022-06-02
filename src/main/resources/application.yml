@@ -5,8 +5,8 @@ server:
 spring:
   datasource:
     url: jdbc:mariadb://localhost:3306/wood
-    username: wood
-    password: 1234
+    username: root
+    password: skck0226
     driver-class-name: org.mariadb.jdbc.Driver
 
   servlet:
@@ -16,7 +16,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
     show-sql: true
 

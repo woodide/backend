@@ -2,7 +2,7 @@ package com.system.wood.web.assignment.controller;
 
 import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
-import com.system.wood.domain.member.Member;
+import com.system.wood.domain.user.User;
 import com.system.wood.domain.testcase.Testcase;
 import com.system.wood.domain.testcase.TestcaseService;
 import com.system.wood.infra.storage.StorageService;
@@ -32,7 +32,7 @@ public class AssignmentController {
 
     private final StorageService storageService;
     private final AssignmentService assignmentService;
-    private final MemberService memberService;
+     private final UserService userService;
     private final WebContainerService webContainerService;
     private final TestcaseService testcaseService;
 
@@ -44,7 +44,7 @@ public class AssignmentController {
     public ResponseEntity<ResponseDto> setAssignment(AssignmentReqDto assignmentReqDto) throws Exception {
 
         // TODO: 로그인 가정 JWT 가드 붙이고 해제
-        Member member = memberService.findOneById(Long.valueOf(0));
+        User user = userService.findOneById(Long.valueOf(0));
 
         // 하드디스크에 테스트케이스 저장
         String inputUrl = storageService.storeTestcase(assignmentReqDto.getTestInput());

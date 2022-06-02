@@ -1,6 +1,7 @@
 package com.system.wood.web.assignment.dto;
 
 import com.system.wood.domain.assigment.Assignment;
+import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import javax.persistence.Lob;
 
 @Getter
 @Setter
-public class AssignmentReqDto {
+public class AssignmentReqDto2 {
 
     @Column(nullable = false)
     private String assignmentName;
@@ -23,20 +24,26 @@ public class AssignmentReqDto {
 
     private String languageVersion;
 
+    @Lob
+    private String testcase;
+
+    @Lob
+    private String expectedResult;
+
     private MultipartFile multipartFile;
 
-    private MultipartFile testInput;
+    private Long subjectId;
 
-    private MultipartFile testOutput;
-
-    public Assignment toEntity(String uploadUrl, String imageUrl) {
+    public Assignment toEntity(String uploadUrl, User creator) {
         return Assignment.builder()
                 .assignmentName(assignmentName)
                 .description(description)
                 .language(language)
                 .languageVersion(languageVersion)
+                .testcase(testcase)
+                .expectedResult(expectedResult)
                 .uploadUrl(uploadUrl)
-                .imageUrl(imageUrl)
+                .creator(creator)
                 .build();
     }
 }

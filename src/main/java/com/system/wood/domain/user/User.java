@@ -1,8 +1,9 @@
-package com.system.wood.domain.member;
+package com.system.wood.domain.user;
 
 import com.sun.istack.NotNull;
 import com.system.wood.domain.Role;
 import com.system.wood.domain.container.Container;
+import com.system.wood.domain.subject.Subject;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,29 +17,42 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Member {
+public class User {
 
     @Id @GeneratedValue
-    @Column(name = "member_id")
+    @Column(name = "user_id")
     private Long id;
-
-    private Long classNumber;
 
     @Column(unique = true)
     private String email;
 
+    @Column
     @NotNull
     private String password;
 
+    @Column
+    @NotNull
+    private String student_id;
+
+    @Column
     @NotNull
     private String username;
 
+    @Column
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column
+    @ManyToMany
+    private List<Subject> subjectList = new ArrayList<>();
+
+    @Column
+    @OneToMany
+    private List<Container> containerList = new ArrayList<>();
+
     @Override
     public String toString() {
-        return "Member{" +
+        return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
@@ -46,11 +60,9 @@ public class Member {
                 ", role=" + role +
                 '}';
     }
-    @OneToMany(mappedBy = "member")
-    private List<Container> containerList = new ArrayList<>();
 
     @Builder
-    public Member(String email, String password, String username, Role role) {
+    public User(String email, String password, String username, Role role) {
         this.email = email;
         this.password = password;
         this.username = username;
