@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
 import java.util.UUID;
 
 @Slf4j
@@ -36,8 +34,7 @@ public class AssignmentController {
     private final WebContainerService webContainerService;
     private final TestcaseService testcaseService;
 
-    @Value("${file.dockerImage-path}")
-    private String imagePath;
+
 
     @ResponseBody
     @PostMapping(value = "/professor/setAssignment")
@@ -55,11 +52,10 @@ public class AssignmentController {
 
         // 도커 이미지 생성(5분 소요)
         String imageStoredName = UUID.randomUUID().toString();
-        String imageUrl = imagePath + imageStoredName;
         webContainerService.buildImage(assignmentReqDto.getLanguage(), imageStoredName,assignmentReqDto.getLanguageVersion());
 
         // db에 과제와 테스트케이스 정보 저장
-        Assignment savedAssignment = assignmentService.save(assignmentReqDto.toEntity(uploadUrl, imageUrl, member));
+        Assignment savedAssignment = assignmentService.save(assignmentReqDto.toEntity(uploadUrl, imageStoredName, member));
         testcaseService.save(new Testcase(inputUrl, outputUrl, savedAssignment));
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(200));
     }

@@ -32,7 +32,7 @@ public class Assignment {
 
     private String uploadUrl; // skeleton code를 업로드한 경로
 
-    private String imageUrl; // docker image를 업로드한 경로
+    private String imageName; // docker image를 업로드한 경로
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -42,13 +42,13 @@ public class Assignment {
     private List<Testcase> testcaseList = new ArrayList<>();
 
     @Builder
-    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageUrl, Member creator) {
+    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageName, Member creator) {
         this.assignmentName = assignmentName;
         this.description = description;
         this.language = language;
         this.languageVersion = languageVersion;
         this.uploadUrl = uploadUrl;
-        this.imageUrl = imageUrl;
+        this.imageName = imageName;
         this.creator = creator;
     }
 }

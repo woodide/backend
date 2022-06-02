@@ -29,14 +29,14 @@ public class AssignmentReqDto {
 
     private MultipartFile testOutput;
 
-    public Assignment toEntity(String uploadUrl, String imageUrl, Member creator) {
+    public Assignment toEntity(String uploadUrl, String imageName, Member creator) {
         return Assignment.builder()
                 .assignmentName(assignmentName)
                 .description(description)
                 .language(language)
                 .languageVersion(languageVersion)
                 .uploadUrl(uploadUrl)
-                .imageUrl(imageUrl)
+                .imageName(imageName)
                 .creator(creator)
                 .build();
     }
