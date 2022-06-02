@@ -4,6 +4,7 @@ import com.sun.istack.NotNull;
 import com.system.wood.domain.Role;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.subject.Subject;
+import com.system.wood.domain.usertosubject.UserToSubj;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,11 +44,11 @@ public class User {
     private Role role;
 
     @Column
-    @ManyToMany
-    private List<Subject> subjectList = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<UserToSubj> userToSubjList = new ArrayList<>();
 
     @Column
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<Container> containerList = new ArrayList<>();
 
     @Override

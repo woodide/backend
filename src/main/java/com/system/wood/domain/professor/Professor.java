@@ -35,7 +35,7 @@ public class Professor {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany
+    @OneToMany(mappedBy = "professor")
     private List<Subject> subjectList = new ArrayList<>();
 
     @Override
