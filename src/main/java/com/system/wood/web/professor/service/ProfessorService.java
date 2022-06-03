@@ -2,6 +2,10 @@ package com.system.wood.web.professor.service;
 
 import com.system.wood.domain.professor.Professor;
 import com.system.wood.domain.professor.ProfessorRepository;
+import com.system.wood.domain.student.Student;
+import com.system.wood.domain.student.StudentRepository;
+import com.system.wood.domain.studtosubj.StudToSubj;
+import com.system.wood.domain.studtosubj.StudToSubjRepository;
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,10 @@ public class ProfessorService {
     private SubjectRepository subjectRepository;
     @Autowired
     private ProfessorRepository professorRepository;
+    @Autowired
+    private StudentRepository studentRepository;
+    @Autowired
+    private StudToSubjRepository studToSubjRepository;
 
     @Transactional
     public Subject findById(Long id) {
@@ -38,6 +46,13 @@ public class ProfessorService {
     @Transactional
     public Subject createSubject(Subject subject) {
         return subjectRepository.save(subject);
+    }
+
+    public void addStudentList(List<String> studentNumberList, Subject subject) {
+        List<Student> studentList = studentRepository.findByStudentNumberIn(studentNumberList);
+        studentList.stream()
+                .map(student -> new StudToSubj(student, subject))
+                .forEach(studToSubjRepository::save);
     }
 
 }

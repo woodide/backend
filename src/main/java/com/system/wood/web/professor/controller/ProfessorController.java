@@ -1,9 +1,11 @@
+package com.system.wood.web.professor.controller;
 
-import com.system.wood.domain.User;
 import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
+import com.system.wood.domain.professor.Professor;
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.subject.SubjectRepository;
+import com.system.wood.domain.subject.SubjectService;
 import com.system.wood.domain.testcase.Testcase;
 import com.system.wood.domain.testcase.TestcaseService;
 import com.system.wood.domain.student.Student;
@@ -13,6 +15,8 @@ import com.system.wood.web.professor.dto.AssignmentReqDto;
 import com.system.wood.web.container.dto.ResponseDto;
 import com.system.wood.web.container.dto.ReturnStatus;
 import com.system.wood.web.container.service.WebContainerService;
+import com.system.wood.web.professor.dto.StudReqDto;
+import com.system.wood.web.professor.dto.StudResDto;
 import com.system.wood.web.professor.dto.SubjectDto;
 import com.system.wood.web.professor.service.ProfessorService;
 import com.system.wood.web.user.service.UserService;
@@ -31,7 +35,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/professor")
 @RequiredArgsConstructor
-public class ProfessorContoller {
+public class ProfessorController {
     private final ProfessorService professorService;
     private final StudentRepository studentRepository;
     private final UserService userService;
@@ -40,32 +44,32 @@ public class ProfessorContoller {
     private final TestcaseService testcaseService;
     private final SubjectRepository subjectRepository;
     private final StorageService storageService;
+    private final SubjectService subjectService;
 
     @Transactional
     @PostMapping("/subject")
-    public Subject createSubject(@RequestBody SubjectDto subjectDto){
-        Subject subject = subjectDto.toEntity();
-        return professorService.createSubject(subject);
+    public ResponseEntity<ResponseDto> createSubject(@AuthenticationPrincipal String email, @RequestBody SubjectDto subjectDto){
+        Professor professor = userService.findProfessor(email);
+        Subject subject = subjectDto.toEntity(professor);
+        professorService.createSubject(subject);
+
+        return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
     }
 
     @Transactional
     @PostMapping("/subject/addStudent")
-    public void addStudent(@RequestBody SubjectDto subjectDto){
-        Subject subject = professorService.findById(subjectDto.getSubjectId());
-        List<Student> students = subject.getUserList();
-        List<Student> users = studentRepository.findAllById(subjectDto.getStudentsId());
-        for(Student i:users){
-            students.add(i);
-        }
-        subject.setUserList(students);
-        professorService.createSubject(subject);
+    public ResponseEntity<ResponseDto> addStudent(@RequestBody StudReqDto studReqDto){
+
+        Subject subject = subjectService.getSubject(studReqDto.getSubjectCode());
+        professorService.addStudentList(studReqDto.getStudentNumberList(), subject);
+
+        return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
     }
 
     @Transactional
     @GetMapping("/subject/student")
-    public List<Student> student(@RequestParam("id") Long subjectId){
-        Subject subject = subjectRepository.findOneById(subjectId);
-        return subject.getUserList();
+    public ResponseEntity<List<StudResDto>> student(@RequestParam("code") String code){
+        return new ResponseEntity<>(subjectService.listStudentResDto(code), HttpStatus.OK);
     }
 
     @Transactional

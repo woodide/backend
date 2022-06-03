@@ -27,18 +27,16 @@ public class Subject {
 
     private String code;
 
-    @ManyToMany
-    private List<Student> userList = new ArrayList<>();
-
     @OneToMany(mappedBy = "subject")
-    private List<StudToSubj> userToSubjList = new ArrayList<>();
+    private List<StudToSubj> studToSubjList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id")
     private Professor professor;
 
-    public Subject(String name, String code) {
+    public Subject(String name, String code, Professor professor) {
         this.name = name;
         this.code = code;
+        this.professor = professor;
     }
 }

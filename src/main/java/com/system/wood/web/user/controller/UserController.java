@@ -6,7 +6,9 @@ import com.system.wood.domain.student.Student;
 import com.system.wood.jwt.JwtTokenProvider;
 import com.system.wood.domain.Role;
 import com.system.wood.domain.Token;
+import com.system.wood.web.professor.dto.StudResDto;
 import com.system.wood.web.professor.service.ProfessorService;
+import com.system.wood.web.user.dto.LoginResDto;
 import com.system.wood.web.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping(value="/user")
 public class UserController {
 
     @Autowired
@@ -30,8 +32,8 @@ public class UserController {
     private ProfessorService professorService;
 
     @GetMapping("/student")
-    public List<Student> allStudent(){
-        return userService.findAll();
+    public List<StudResDto> allStudent(){
+        return userService.findAll().stream().map(student -> new StudResDto(student.getStudentNumber(), student.getEmail(), student.getUsername())).collect(Collectors.toList());
     }
 
     @GetMapping("/professor")
@@ -62,7 +64,10 @@ public class UserController {
         try {
             User user = userService.login(request);
             String token = JwtTokenProvider.generateToken(user.getEmail(), user.getRole().toString());
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            LoginResDto loginResDto= (user instanceof Professor)
+                    ? new LoginResDto(token, Boolean.TRUE)
+                    : new LoginResDto(token, Boolean.FALSE);
+            return new ResponseEntity<>(loginResDto, HttpStatus.OK);
         }
         catch (Exception e){
             throw e;

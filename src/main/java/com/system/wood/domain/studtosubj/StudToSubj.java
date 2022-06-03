@@ -2,9 +2,11 @@ package com.system.wood.domain.studtosubj;
 
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.student.Student;
+import lombok.Getter;
 
 import javax.persistence.*;
 
+@Getter
 @Entity
 @Table(name = "stud_to_subj")
 public class StudToSubj {
@@ -22,4 +24,9 @@ public class StudToSubj {
     private Subject subject;
 
     // 필요한 필드들 자유롭게 추가
+
+    public StudToSubj(Student student, Subject subject) {
+        this.student = student;
+        this.subject = subject;
+    }
 }
