@@ -12,8 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Slf4j
@@ -53,9 +56,9 @@ public class UserController {
         return "success";
     }
 
+    @Transactional
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Token.Request request) throws Exception {
-
         try {
             User user = userService.login(request);
             String token = JwtTokenProvider.generateToken(user.getEmail(), user.getRole().toString());

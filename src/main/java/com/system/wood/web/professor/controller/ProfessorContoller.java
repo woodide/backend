@@ -1,8 +1,9 @@
-package com.system.wood.web.professor.controller;
 
+import com.system.wood.domain.User;
 import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.subject.Subject;
+import com.system.wood.domain.subject.SubjectRepository;
 import com.system.wood.domain.testcase.Testcase;
 import com.system.wood.domain.testcase.TestcaseService;
 import com.system.wood.domain.student.Student;
@@ -32,13 +33,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProfessorContoller {
     private final ProfessorService professorService;
-    private final StudentRepository userRepository;
+    private final StudentRepository studentRepository;
     private final UserService userService;
-    private final StorageService storageService;
     private final AssignmentService assignmentService;
     private final WebContainerService webContainerService;
     private final TestcaseService testcaseService;
+    private final SubjectRepository subjectRepository;
+    private final StorageService storageService;
 
+    @Transactional
     @PostMapping("/subject")
     public Subject createSubject(@RequestBody SubjectDto subjectDto){
         Subject subject = subjectDto.toEntity();
@@ -50,12 +53,19 @@ public class ProfessorContoller {
     public void addStudent(@RequestBody SubjectDto subjectDto){
         Subject subject = professorService.findById(subjectDto.getSubjectId());
         List<Student> students = subject.getUserList();
-        List<Student> users = userRepository.findAllById(subjectDto.getStudentsId());
+        List<Student> users = studentRepository.findAllById(subjectDto.getStudentsId());
         for(Student i:users){
             students.add(i);
         }
         subject.setUserList(students);
         professorService.createSubject(subject);
+    }
+
+    @Transactional
+    @GetMapping("/subject/student")
+    public List<Student> student(@RequestParam("id") Long subjectId){
+        Subject subject = subjectRepository.findOneById(subjectId);
+        return subject.getUserList();
     }
 
     @Transactional
