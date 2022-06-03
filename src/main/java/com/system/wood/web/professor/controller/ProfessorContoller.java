@@ -3,9 +3,11 @@ package com.system.wood.web.professor.controller;
 import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.subject.Subject;
+import com.system.wood.domain.subject.SubjectRepository;
+import com.system.wood.domain.testcase.Testcase;
 import com.system.wood.domain.user.User;
 import com.system.wood.domain.user.UserRepository;
-import com.system.wood.infra.storage.StorageService;
+//import com.system.wood.infra.storage.StorageService;
 import com.system.wood.web.assignment.dto.AssignmentReqDto;
 import com.system.wood.web.assignment.dto.AssignmentReqDto2;
 import com.system.wood.web.professor.dto.SubjectDto;
@@ -13,14 +15,12 @@ import com.system.wood.web.professor.service.ProfessorService;
 import com.system.wood.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/professor")
@@ -31,15 +31,21 @@ public class ProfessorContoller {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
-    @Autowired
-    private StorageService storageService;
+//    @Autowired
+//    private StorageService storageService;
     @Autowired
     private AssignmentService assignmentService;
+    @Autowired
+    private SubjectRepository subjectRepository;
 
+    @Transactional
     @PostMapping("/subject")
     public Subject createSubject(@RequestBody SubjectDto subjectDto){
+        System.out.println(subjectDto.toString());
         Subject subject = new Subject();
+        subject.setId(subjectDto.getSubjectId());
         subject.setName(subjectDto.getName());
+        subject.setCode((subjectDto.getCode()));
         List<User> users = userRepository.findAllById(subjectDto.getStudentsId());
         subject.setUserList(users);
         return professorService.createSubject(subject);
@@ -53,13 +59,16 @@ public class ProfessorContoller {
             return ;
         }
         Subject subject = subj.get();
-        List<User> students = subject.getUserList();
         List<User> users = userRepository.findAllById(subjectDto.getStudentsId());
-        for(User i:users){
-            students.add(i);
-        }
-        subject.setUserList(students);
+        subject.setUserList(users);
         professorService.createSubject(subject);
+    }
+
+    @Transactional
+    @GetMapping("/subject/student")
+    public List<User> student(@RequestParam("id") Long subjectId){
+        Subject subject = subjectRepository.findOneById(subjectId);
+        return subject.getUserList();
     }
 
     @Transactional
@@ -69,22 +78,5 @@ public class ProfessorContoller {
         if(subj.isEmpty()){
             return ;
         }
-
-        // TODO: 로그인 가정 JWT 가드 붙이고 해제
-        User user = userService.findOneById(Long.valueOf(0));
-
-        // 파일을 저장장치에 저장
-        String uploadUrl = storageService.store(assignmentReqDto.getMultipartFile());
-
-        // db에 과제 정보 저장
-        Assignment assignment = assignmentReqDto.toEntity(uploadUrl, user);
-        assignmentService.save(assignment);
-
-        Subject subject = subj.get();
-        List<Assignment> assignments = subject.getAssignmentList();
-        assignments.add(assignment);
-        subject.setAssignmentList(assignments);
-
-        professorService.createSubject(subject);
     }
 }

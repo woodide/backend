@@ -37,17 +37,16 @@ public class Assignment {
     // @JoinColumn(name = "member_id")
     // private Member creator; // ROLE가 PROFESSOR인 멤버만이 출제자가 될 수 있다.
 
-    @OneToMany(mappedBy = "assignment")
-    private List<Testcase> testcaseList = new ArrayList<>();
+//    @OneToMany(mappedBy = "assignment")
+//    private List<Testcase> testcaseList = new ArrayList<>();
 
     @Builder
-    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageUrl, Member creator) {
+    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageUrl) {
         this.assignmentName = assignmentName;
         this.description = description;
         this.language = language;
         this.languageVersion = languageVersion;
         this.uploadUrl = uploadUrl;
         this.imageUrl = imageUrl;
-        this.creator = creator;
     }
 }

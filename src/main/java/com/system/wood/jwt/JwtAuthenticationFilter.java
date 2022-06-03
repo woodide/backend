@@ -26,7 +26,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (!jwt.isEmpty() && JwtTokenProvider.validateToken(jwt)) {
                 String userId = JwtTokenProvider.getUserIdFromJWT(jwt); //jwt에서 사용자 id를 꺼낸다.
-//                JwtTokenProvider.getRoleFromJWT(jwt)
                 List<GrantedAuthority> role = new ArrayList<>();
                 role.add(new SimpleGrantedAuthority("ROLE_" + JwtTokenProvider.getRoleFromJWT(jwt)));
                 UserAuthentication authentication = new UserAuthentication(userId, null, role); //id를 인증한다.

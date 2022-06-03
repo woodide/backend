@@ -40,10 +40,10 @@ public class AssignmentReqDto2 {
                 .description(description)
                 .language(language)
                 .languageVersion(languageVersion)
-                .testcase(testcase)
-                .expectedResult(expectedResult)
+//                .testcase(testcase)
+//                .expectedResult(expectedResult)
                 .uploadUrl(uploadUrl)
-                .creator(creator)
+//                .creator(creator)
                 .build();
     }
 }

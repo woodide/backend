@@ -61,9 +61,9 @@ public class UserService {
         Optional<Professor> mem = professorRepository.findByEmail(request.getEmail());
         System.out.println(mem.get());
         if(mem.isEmpty()) return null;
-        Professor user = mem.get();
-        if(passwordEncoder.matches(request.getPassword(), user.getPassword())){
-            return user;
+        Professor professor = mem.get();
+        if(passwordEncoder.matches(request.getPassword(), professor.getPassword())){
+            return professor;
         }
         else return null;
     }
