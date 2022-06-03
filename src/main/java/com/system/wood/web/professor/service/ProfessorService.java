@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,17 +22,21 @@ public class ProfessorService {
     private ProfessorRepository professorRepository;
 
     @Transactional
-    public Optional<Subject> findById(Long id){
-        return subjectRepository.findById(id);
+    public Subject findById(Long id) {
+        return subjectRepository.findById(id).orElseThrow(
+                () -> {
+                    throw new EntityNotFoundException(String.format("id가 %d인 Subject가 존재하지 않습니다.", id));
+                }
+        );
     }
 
     @Transactional
-    public List<Professor> findAll(){
+    public List<Professor> findAll() {
         return professorRepository.findAll();
     }
 
     @Transactional
-    public Subject createSubject(Subject subject){
+    public Subject createSubject(Subject subject) {
         return subjectRepository.save(subject);
     }
 

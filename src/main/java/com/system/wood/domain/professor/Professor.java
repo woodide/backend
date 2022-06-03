@@ -2,6 +2,7 @@ package com.system.wood.domain.professor;
 
 import com.sun.istack.NotNull;
 import com.system.wood.domain.Role;
+import com.system.wood.domain.User;
 import com.system.wood.domain.subject.Subject;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,44 +17,27 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Professor {
+public class Professor extends User {
 
     @Id
     @GeneratedValue
     @Column(name = "professor_id")
     private Long id;
 
-    @Column(unique = true)
-    private String email;
-
-    @NotNull
-    private String password;
-
-    @NotNull
-    private String username;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
     @OneToMany(mappedBy = "professor")
     private List<Subject> subjectList = new ArrayList<>();
 
     @Override
     public String toString() {
-        return "Professor{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", username='" + username + '\'' +
-                ", role=" + role +
-                '}';
+        return super.toString();
     }
 
     @Builder
     public Professor(String email, String password, String username, Role role) {
-        this.email = email;
-        this.password = password;
-        this.username = username;
-        this.role = role;
+        super(email, password, username, role);
+    }
+
+    public void setPassword(String password) {
+        super.setPassword(password);
     }
 }
