@@ -1,6 +1,7 @@
 package com.system.wood.domain.assigment;
 
-import com.system.wood.domain.user.User;
+import com.system.wood.domain.subject.Subject;
+import com.system.wood.domain.testcase.Testcase;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,22 +32,26 @@ public class Assignment {
 
     private String uploadUrl; // skeleton code를 업로드한 경로
 
-    private String imageUrl; // docker image를 업로드한 경로
+    private String imageName; // docker image name
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "member_id")
-    // private Member creator; // ROLE가 PROFESSOR인 멤버만이 출제자가 될 수 있다.
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
+    private List<Testcase> testcaseList = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "assignment")
-//    private List<Testcase> testcaseList = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
 
     @Builder
-    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageUrl) {
+    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageName) {
         this.assignmentName = assignmentName;
         this.description = description;
         this.language = language;
         this.languageVersion = languageVersion;
         this.uploadUrl = uploadUrl;
-        this.imageUrl = imageUrl;
+        this.imageName = imageName;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 }

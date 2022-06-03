@@ -1,7 +1,6 @@
-package com.system.wood.web.assignment.dto;
+package com.system.wood.web.professor.dto;
 
 import com.system.wood.domain.assigment.Assignment;
-import com.system.wood.domain.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,14 +28,16 @@ public class AssignmentReqDto {
 
     private MultipartFile testOutput;
 
-    public Assignment toEntity(String uploadUrl, String imageUrl) {
+    private Long subjectId;
+
+    public Assignment toEntity(String uploadUrl, String imageName) {
         return Assignment.builder()
                 .assignmentName(assignmentName)
                 .description(description)
                 .language(language)
                 .languageVersion(languageVersion)
                 .uploadUrl(uploadUrl)
-                .imageUrl(imageUrl)
+                .imageName(imageName)
                 .build();
     }
 }
