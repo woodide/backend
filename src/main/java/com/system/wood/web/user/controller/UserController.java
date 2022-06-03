@@ -68,15 +68,4 @@ public class UserController {
             throw e;
         }
     }
-
-    @GetMapping("/professor")
-    public String p(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.toString();
-    }
-//
-//    @GetMapping("/user")
-//    public String s(){
-//        return
-//    }
 }
