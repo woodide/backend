@@ -1,5 +1,6 @@
 package com.system.wood.domain.subject;
 
+import com.system.wood.domain.professor.Professor;
 import com.system.wood.domain.studtosubj.StudToSubj;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,4 +13,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     Subject findOneById(Long id);
 
     Optional<Subject> findByCode(String code);
+
+    List<Subject> findByProfessor(Professor professor);
 }

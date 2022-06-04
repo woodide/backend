@@ -37,14 +37,21 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProfessorController {
     private final ProfessorService professorService;
-    private final StudentRepository studentRepository;
     private final UserService userService;
     private final AssignmentService assignmentService;
     private final WebContainerService webContainerService;
     private final TestcaseService testcaseService;
-    private final SubjectRepository subjectRepository;
     private final StorageService storageService;
     private final SubjectService subjectService;
+
+    @Transactional
+    @GetMapping("/subject")
+    public ResponseEntity<List<SubjectDto>> listSubjects(@AuthenticationPrincipal String email){
+        Professor professor = userService.findProfessor(email);
+        List<SubjectDto> subjectList = subjectService.getSubjectList(professor);
+
+        return new ResponseEntity<>(subjectList, HttpStatus.OK);
+    }
 
     @Transactional
     @PostMapping("/subject")
