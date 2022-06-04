@@ -1,6 +1,7 @@
 package com.system.wood.web.student.controller;
 
 import com.system.wood.domain.student.Student;
+import com.system.wood.web.professor.dto.SubjectDto;
 import com.system.wood.web.student.dto.SubjectResDto;
 import com.system.wood.web.student.service.StudentService;
 import com.system.wood.web.user.service.UserService;
@@ -23,7 +24,7 @@ public class StudentController {
     private final UserService userService;
 
     @GetMapping("/subject")
-    public ResponseEntity<List<SubjectResDto>> getSubjectList(@AuthenticationPrincipal String email) {
+    public ResponseEntity<List<SubjectDto>> getSubjectList(@AuthenticationPrincipal String email) {
         Student student = userService.findStudent(email);
         return new ResponseEntity<>(studentService.listSubject(student), HttpStatus.OK);
     }

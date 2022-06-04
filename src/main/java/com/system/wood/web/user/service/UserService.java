@@ -24,14 +24,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ProfessorRepository professorRepository;
 
-    public Student findOneById(Long id){
-        return studentRepository.findById(id).orElseThrow(
-                () -> {
-                    throw new EntityNotFoundException(String.format("id가 %d인 학생이 존재하지 않습니다.", id));
-                }
-        );
-    }
-
     public List<Student> findAll(){
         return studentRepository.findAll();
     }
