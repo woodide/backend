@@ -2,6 +2,7 @@ package com.system.wood.domain.container;
 
 import com.sun.istack.NotNull;
 import com.system.wood.domain.BaseTimeEnity;
+import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.student.Student;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +34,10 @@ public class Container extends BaseTimeEnity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Student student;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignment_id")
+    private Assignment assignment;
 
     @Builder
     public Container(Integer portNum, String dockerContainerId, String containerName, String path, Student student) {
