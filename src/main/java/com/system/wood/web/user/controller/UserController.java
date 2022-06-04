@@ -58,7 +58,6 @@ public class UserController {
         return "success";
     }
 
-    @Transactional
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Token.Request request) throws Exception {
         try {

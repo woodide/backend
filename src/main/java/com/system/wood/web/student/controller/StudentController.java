@@ -2,7 +2,6 @@ package com.system.wood.web.student.controller;
 
 import com.system.wood.domain.student.Student;
 import com.system.wood.web.professor.dto.SubjectDto;
-import com.system.wood.web.student.dto.SubjectResDto;
 import com.system.wood.web.student.service.StudentService;
 import com.system.wood.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;

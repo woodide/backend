@@ -42,7 +42,6 @@ public class ProfessorController {
     private final SubjectService subjectService;
     private final UserValidator userValidator;
 
-    @Transactional
     @GetMapping("/subject")
     public ResponseEntity<List<SubjectDto>> listSubjects(@AuthenticationPrincipal String email){
         Professor professor = userService.findProfessor(email);
@@ -51,7 +50,6 @@ public class ProfessorController {
         return new ResponseEntity<>(subjectList, HttpStatus.OK);
     }
 
-    @Transactional
     @PostMapping("/subject")
     public ResponseEntity<ResponseDto> createSubject(@AuthenticationPrincipal String email, @RequestBody SubjectDto subjectDto){
         Professor professor = userService.findProfessor(email);
@@ -61,23 +59,20 @@ public class ProfessorController {
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
     }
 
-    @Transactional
     @PostMapping("/subject/addStudent")
     public ResponseEntity<ResponseDto> addStudent(@RequestBody StudReqDto studReqDto){
 
         Subject subject = subjectService.getSubject(studReqDto.getSubjectCode());
-        professorService.addStudentList(studReqDto.getStudentNumberList(), subject);
+        professorService.saveStudentList(studReqDto.getStudentNumberList(), subject);
 
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
     }
 
-    @Transactional
     @GetMapping("/subject/student")
     public ResponseEntity<List<StudResDto>> listStudents(@RequestParam("code") String code){
         return new ResponseEntity<>(subjectService.listStudentResDto(code), HttpStatus.OK);
     }
 
-    @Transactional
     @GetMapping("/subject/assignment")
     public ResponseEntity<List<AssignmentResDto>> listAssignments(@RequestParam("code") String code){
         Subject subject = subjectService.getSubject(code);
@@ -85,7 +80,6 @@ public class ProfessorController {
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
-    @Transactional
     @PostMapping("/subject/addAssignment")
     public ResponseEntity<ResponseDto> addAssignment(@AuthenticationPrincipal String email, AssignmentReqDto assignmentReqDto){
 
@@ -93,7 +87,7 @@ public class ProfessorController {
         Subject subject = subjectService.getSubject(assignmentReqDto.getSubjectCode());
 
         // 교수가 해당 과목을 담당하고 있는지 확인
-        userValidator.professorManageSubject(email, subject);
+        userValidator.validateProfessor(email, subject);
 
         // 하드디스크에 테스트케이스와 스켈레톤 코드 저장
         String inputUrl = storageService.storeTestcase(assignmentReqDto.getTestInput());

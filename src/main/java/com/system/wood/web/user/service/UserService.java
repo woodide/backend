@@ -11,13 +11,15 @@ import com.system.wood.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class UserService {
 
     private final StudentRepository studentRepository;
@@ -34,16 +36,20 @@ public class UserService {
         if(member.isEmpty() && professor.isEmpty()) return false;
         return true;
     }
+
+    @Transactional
     public Professor saveProfessor(Professor professor){
         professor.setPassword(passwordEncoder.encode((professor.getPassword())));
         return professorRepository.save(professor);
     }
 
+    @Transactional
     public Student saveStudent(Student student){
         student.setPassword(passwordEncoder.encode((student.getPassword())));
         return studentRepository.save(student);
     }
 
+    @Transactional
     public User login(Token.Request request){
         Optional<Student> user = studentRepository.findByEmail(request.getEmail());
         Optional<Professor> professor = professorRepository.findByEmail(request.getEmail());

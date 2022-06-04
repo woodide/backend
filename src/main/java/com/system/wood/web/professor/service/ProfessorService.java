@@ -11,12 +11,13 @@ import com.system.wood.domain.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ProfessorService {
 
@@ -29,7 +30,6 @@ public class ProfessorService {
     @Autowired
     private StudToSubjRepository studToSubjRepository;
 
-    @Transactional
     public Subject findById(Long id) {
         return subjectRepository.findById(id).orElseThrow(
                 () -> {
@@ -38,7 +38,6 @@ public class ProfessorService {
         );
     }
 
-    @Transactional
     public List<Professor> findAll() {
         return professorRepository.findAll();
     }
@@ -48,7 +47,8 @@ public class ProfessorService {
         return subjectRepository.save(subject);
     }
 
-    public void addStudentList(List<String> studentNumberList, Subject subject) {
+    @Transactional
+    public void saveStudentList(List<String> studentNumberList, Subject subject) {
         List<Student> studentList = studentRepository.findByStudentNumberIn(studentNumberList);
         studentList.stream()
                 .map(student -> new StudToSubj(student, subject))

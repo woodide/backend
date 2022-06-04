@@ -4,14 +4,15 @@ import com.system.wood.domain.assigment.AssignmentRepository;
 import com.system.wood.domain.student.Student;
 import com.system.wood.domain.studtosubj.StudToSubj;
 import com.system.wood.web.professor.dto.SubjectDto;
-import com.system.wood.web.student.dto.SubjectResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StudentService {
 

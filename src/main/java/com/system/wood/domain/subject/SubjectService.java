@@ -6,12 +6,14 @@ import com.system.wood.web.professor.dto.StudResDto;
 import com.system.wood.web.professor.dto.SubjectDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class SubjectService {
 

@@ -3,21 +3,25 @@ package com.system.wood.domain.assigment;
 import com.system.wood.domain.subject.Subject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
 
+    @Transactional
     public Assignment save(Assignment assignment) {
         Assignment savedAssignment = assignmentRepository.save(assignment);
         return savedAssignment;
     }
 
+    @Transactional
     public void delete(Long assignmentId) {
         if(assignmentRepository.existsById(assignmentId))
             assignmentRepository.deleteById(assignmentId);
