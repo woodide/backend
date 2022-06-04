@@ -9,6 +9,5 @@ public class ContainerReqDto {
     @NotNull
     private String containerName;
 
-    @NotNull
-    private String lang;
+    private String imageName;
 }

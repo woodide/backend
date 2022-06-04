@@ -29,10 +29,11 @@ public class WebContainerController {
     public ResponseEntity<ResponseDto> createContainer(@AuthenticationPrincipal String email, @RequestBody ContainerReqDto containerReuestDto){
 
         Student student = userService.findStudent(email);
-        String containerName = containerReuestDto.getContainerName();
+        String containerName = containerReuestDto.getContainerName() + student.getStudentNumber();
+        String imageName = containerReuestDto.getImageName();
 
         try {
-            webContainerService.createContainer(containerName, student);
+            webContainerService.createContainer(containerName, imageName, student);
             return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(201));
         } catch (IOException e) {
             e.printStackTrace();

@@ -34,13 +34,13 @@ public class DockerContainerService {
     private String containerPath;
 
     @Transactional
-    public Container createContainer(String containerName, Student user) throws IOException, BusinessException {
+    public Container createContainer(String containerName, String imageName, Student user) throws IOException, BusinessException {
         Integer pgID = 82; // 고민: 나중에 만들 과제 테이블의 id를 저장하자.
         Integer portNum = findFreePort();
         String path = containerPath + containerName + portNum;
 
         // container를 생성하는 command 작성
-        String command = createCommand(user.getId(), pgID, portNum, containerName);
+        String command = createCommand(user.getId(), pgID, portNum, containerName, imageName);
 
         // directory 생성
         makeDirectory(path);
@@ -103,7 +103,7 @@ public class DockerContainerService {
         deleteDirectory(path);
     }
 
-    private String createCommand(Long memberId, Integer pgID, Integer portNum, String containerName) {
+    private String createCommand(Long memberId, Integer pgID, Integer portNum, String containerName, String imageName) {
         String path = containerPath + containerName + portNum;
 
         return new StringBuilder().append("docker run -d --name=")
@@ -115,7 +115,8 @@ public class DockerContainerService {
                 .append(" -p ")
                 .append(portNum).append(":8443")
                 .append(" -v " + path + ":/config ")
-                .append(" --restart unless-stopped linuxserver/code-server")
+                .append(" --restart unless-stopped ")
+                .append(imageName)
                 .toString();
     }
 
