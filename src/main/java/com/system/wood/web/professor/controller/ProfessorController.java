@@ -8,13 +8,10 @@ import com.system.wood.domain.subject.SubjectService;
 import com.system.wood.domain.testcase.Testcase;
 import com.system.wood.domain.testcase.TestcaseService;
 import com.system.wood.infra.storage.StorageService;
-import com.system.wood.web.professor.dto.AssignmentReqDto;
+import com.system.wood.web.professor.dto.*;
 import com.system.wood.web.container.dto.ResponseDto;
 import com.system.wood.web.container.dto.ReturnStatus;
 import com.system.wood.web.container.service.WebContainerService;
-import com.system.wood.web.professor.dto.StudReqDto;
-import com.system.wood.web.professor.dto.StudResDto;
-import com.system.wood.web.professor.dto.SubjectDto;
 import com.system.wood.web.professor.service.ProfessorService;
 import com.system.wood.web.user.service.UserService;
 import com.system.wood.web.user.service.UserValidator;
@@ -29,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -77,6 +75,14 @@ public class ProfessorController {
     @GetMapping("/subject/student")
     public ResponseEntity<List<StudResDto>> listStudents(@RequestParam("code") String code){
         return new ResponseEntity<>(subjectService.listStudentResDto(code), HttpStatus.OK);
+    }
+
+    @Transactional
+    @GetMapping("/subject/assignment")
+    public ResponseEntity<List<AssignmentResDto>> listAssignments(@RequestParam("code") String code){
+        Subject subject = subjectService.getSubject(code);
+        List<AssignmentResDto> dtoList = assignmentService.getAssignmentList(subject).stream().map(assignment -> new AssignmentResDto(assignment.getAssignmentName(), assignment.getDescription(), assignment.getImageName())).collect(Collectors.toList());
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
     @Transactional

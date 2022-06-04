@@ -1,9 +1,11 @@
 package com.system.wood.domain.assigment;
 
+import com.system.wood.domain.subject.Subject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,5 +32,9 @@ public class AssignmentService {
                 new EntityNotFoundException(
                         String.format("id가 %d인 과제가 존재하지 않습니다.", id)
                 ));
+    }
+
+    public List<Assignment> getAssignmentList(Subject subject) {
+        return assignmentRepository.findBySubject(subject);
     }
 }

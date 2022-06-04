@@ -31,12 +31,12 @@ public class UserController {
     @Autowired
     private ProfessorService professorService;
 
-    @GetMapping("/student")
+    @GetMapping("/list/student")
     public List<StudResDto> allStudent(){
         return userService.findAll().stream().map(student -> new StudResDto(student.getStudentNumber(), student.getEmail(), student.getUsername())).collect(Collectors.toList());
     }
 
-    @GetMapping("/professor")
+    @GetMapping("/list/professor")
     public List<Professor> allProfessor(){
         return professorService.findAll();
     }
