@@ -60,9 +60,9 @@ public class ProfessorController {
     }
 
     @PostMapping("/subject/addStudent")
-    public ResponseEntity<ResponseDto> addStudent(@RequestBody StudReqDto studReqDto){
-
+    public ResponseEntity<ResponseDto> addStudent(@AuthenticationPrincipal String email, @RequestBody StudReqDto studReqDto){
         Subject subject = subjectService.getSubject(studReqDto.getSubjectCode());
+        userValidator.validateProfessor(email,subject);
         professorService.saveStudentList(studReqDto.getStudentNumberList(), subject);
 
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
