@@ -2,14 +2,17 @@ package com.system.wood.web.user.controller;
 
 import com.system.wood.domain.User;
 import com.system.wood.domain.professor.Professor;
-import com.system.wood.domain.student.Student;
+import com.system.wood.global.error.BusinessException;
+import com.system.wood.global.error.ErrorCode;
 import com.system.wood.jwt.JwtTokenProvider;
-import com.system.wood.domain.Role;
 import com.system.wood.domain.Token;
+import com.system.wood.web.container.dto.ResponseDto;
 import com.system.wood.web.professor.dto.StudResDto;
 import com.system.wood.web.professor.service.ProfessorService;
 import com.system.wood.web.user.dto.LoginResDto;
+import com.system.wood.web.user.dto.ProfSignUpDto;
 import com.system.wood.web.user.dto.ProfessorDto;
+import com.system.wood.web.user.dto.StudSignupDto;
 import com.system.wood.web.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,20 +45,21 @@ public class UserController {
     }
 
     @PostMapping("/signup/student")
-    public String createStudent(@RequestBody Student student){
-        student.setRole(Role.STUDENT);
-        if(userService.isDuplicated(student.getEmail())){
-            return "email is duplicated";
+    public ResponseEntity<ResponseDto> createStudent(@RequestBody StudSignupDto studSignupDto){
+        if(userService.isDuplicated(studSignupDto.getEmail())){
+            throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
         }
-        userService.saveStudent(student);
-        return "success";
+        userService.saveStudent(studSignupDto.toEntity());
+        return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
     }
 
     @PostMapping("/signup/professor")
-    public String createProfessor(@RequestBody Professor professor){
-        professor.setRole(Role.PROFESSOR);
-        userService.saveProfessor(professor);
-        return "success";
+    public ResponseEntity<ResponseDto> createProfessor(@RequestBody ProfSignUpDto profSignUpDto){
+        if(userService.isDuplicated(profSignUpDto.getEmail())){
+            throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
+        }
+        userService.saveProfessor(profSignUpDto.toEntity());
+        return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
     }
 
     @PostMapping("/login")

@@ -36,8 +36,9 @@ public class Student extends User {
     private List<Container> containerList = new ArrayList<>();
 
     @Builder
-    public Student(String email, String password, String username, Role role) {
+    public Student(String email, String password, String username, Role role,String studentNumber) {
         super(email, password, username, role);
+        this.studentNumber = studentNumber;
     }
 
     public void setRole(Role role) {

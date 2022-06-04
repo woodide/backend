@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ResponseDto> handleBusinessException(BusinessException e) {
         e.printStackTrace();
-        return new ResponseEntity<>(ResponseDto.of(ReturnStatus.FAIL, e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ResponseDto.of(ReturnStatus.FAIL, e.getMessage()), e.getStatus());
     }
 
     @ExceptionHandler(Exception.class)
