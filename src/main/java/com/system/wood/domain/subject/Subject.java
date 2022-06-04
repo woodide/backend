@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @Getter
@@ -38,5 +39,14 @@ public class Subject extends BaseTimeEnity {
         this.name = name;
         this.code = code;
         this.professor = professor;
+    }
+
+    @Override
+    // note: 두 엔티티가 비영속 상태인 경우에는 true를 반환한다
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Subject subject = (Subject) o;
+        return Objects.equals(id, subject.getId());
     }
 }

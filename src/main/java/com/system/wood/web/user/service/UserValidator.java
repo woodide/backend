@@ -1,7 +1,6 @@
 package com.system.wood.web.user.service;
 
 import com.system.wood.domain.professor.Professor;
-import com.system.wood.domain.student.Student;
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.global.error.BusinessException;
 import com.system.wood.global.error.ErrorCode;
