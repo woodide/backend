@@ -24,8 +24,7 @@ public class Student extends User {
     @Column(name = "student_id")
     private Long id;
 
-    @Column
-    @NotNull
+    @Column(unique = true, nullable = false)
     private String studentNumber;
 
     @Column

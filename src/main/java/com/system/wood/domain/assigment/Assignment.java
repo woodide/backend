@@ -34,6 +34,7 @@ public class Assignment extends BaseTimeEnity {
 
     private String uploadUrl; // skeleton code를 업로드한 경로
 
+    @Column(unique = true)
     private String imageName; // docker image name
 
     private LocalDateTime dueDate; // 종료일

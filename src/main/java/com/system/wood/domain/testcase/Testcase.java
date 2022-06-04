@@ -1,5 +1,6 @@
 package com.system.wood.domain.testcase;
 
+import com.sun.istack.NotNull;
 import com.system.wood.domain.BaseTimeEnity;
 import com.system.wood.domain.assigment.Assignment;
 import lombok.Getter;
@@ -17,8 +18,10 @@ public class Testcase extends BaseTimeEnity {
     @GeneratedValue
     private Long id;
 
+    @NotNull
     private String inputUrl;
 
+    @NotNull
     private String outputUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
