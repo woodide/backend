@@ -9,16 +9,14 @@ import com.system.wood.domain.Token;
 import com.system.wood.web.professor.dto.StudResDto;
 import com.system.wood.web.professor.service.ProfessorService;
 import com.system.wood.web.user.dto.LoginResDto;
+import com.system.wood.web.user.dto.ProfessorDto;
 import com.system.wood.web.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,13 +30,15 @@ public class UserController {
     private ProfessorService professorService;
 
     @GetMapping("/list/student")
-    public List<StudResDto> allStudent(){
-        return userService.findAll().stream().map(student -> new StudResDto(student.getStudentNumber(), student.getEmail(), student.getUsername())).collect(Collectors.toList());
+    public ResponseEntity<List<StudResDto>> allStudent(){
+        List<StudResDto> studResDtoList = userService.findAll().stream().map(student -> new StudResDto(student.getStudentNumber(), student.getEmail(), student.getUsername())).collect(Collectors.toList());
+        return new ResponseEntity<>(studResDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/list/professor")
-    public List<Professor> allProfessor(){
-        return professorService.findAll();
+    public ResponseEntity<List<ProfessorDto>> allProfessor(){
+        List<ProfessorDto> professorDtoList = professorService.findAll().stream().map(professor -> new ProfessorDto(professor.getEmail(), professor.getUsername())).collect(Collectors.toList());
+        return new ResponseEntity<>(professorDtoList, HttpStatus.OK);
     }
 
     @PostMapping("/signup/student")
