@@ -12,6 +12,7 @@ public enum ErrorCode {
     CANNOT_STOP_CONTAINER(HttpStatus.BAD_REQUEST, "컨테이너를 중지할 수 없습니다."),
     CANNOT_KILL_CONTAINER(HttpStatus.BAD_REQUEST, "컨테이너를 삭제할 수 없습니다."),
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 잘못 입력되었습니다"),
+    PROFESSOR_SUBJECT_NOT_MATCHED(HttpStatus.BAD_REQUEST, "해당 교수의 과목이 아닙니다."),
 
     // 401
     UNAUTHORIZEDException (HttpStatus.UNAUTHORIZED, "로그인 후 이용가능합니다."),

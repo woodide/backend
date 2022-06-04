@@ -4,12 +4,9 @@ import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.professor.Professor;
 import com.system.wood.domain.subject.Subject;
-import com.system.wood.domain.subject.SubjectRepository;
 import com.system.wood.domain.subject.SubjectService;
 import com.system.wood.domain.testcase.Testcase;
 import com.system.wood.domain.testcase.TestcaseService;
-import com.system.wood.domain.student.Student;
-import com.system.wood.domain.student.StudentRepository;
 import com.system.wood.infra.storage.StorageService;
 import com.system.wood.web.professor.dto.AssignmentReqDto;
 import com.system.wood.web.container.dto.ResponseDto;
@@ -20,8 +17,10 @@ import com.system.wood.web.professor.dto.StudResDto;
 import com.system.wood.web.professor.dto.SubjectDto;
 import com.system.wood.web.professor.service.ProfessorService;
 import com.system.wood.web.user.service.UserService;
+import com.system.wood.web.user.service.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.UUID;
+import java.util.Locale;
 
 @Slf4j
 @RestController
@@ -43,6 +42,7 @@ public class ProfessorController {
     private final TestcaseService testcaseService;
     private final StorageService storageService;
     private final SubjectService subjectService;
+    private final UserValidator userValidator;
 
     @Transactional
     @GetMapping("/subject")
@@ -75,7 +75,7 @@ public class ProfessorController {
 
     @Transactional
     @GetMapping("/subject/student")
-    public ResponseEntity<List<StudResDto>> student(@RequestParam("code") String code){
+    public ResponseEntity<List<StudResDto>> listStudents(@RequestParam("code") String code){
         return new ResponseEntity<>(subjectService.listStudentResDto(code), HttpStatus.OK);
     }
 
@@ -84,20 +84,18 @@ public class ProfessorController {
     public ResponseEntity<ResponseDto> addAssignment(@AuthenticationPrincipal String email, AssignmentReqDto assignmentReqDto){
 
         // 과목 찾기
-        Subject subject = professorService.findById(assignmentReqDto.getSubjectId());
+        Subject subject = subjectService.getSubject(assignmentReqDto.getSubjectCode());
 
-        // 유저 확인
-        Student user = userService.findStudent(email);
+        // 교수가 해당 과목을 담당하고 있는지 확인
+        userValidator.professorManageSubject(email, subject);
 
-        // 하드디스크에 테스트케이스 저장
+        // 하드디스크에 테스트케이스와 스켈레톤 코드 저장
         String inputUrl = storageService.storeTestcase(assignmentReqDto.getTestInput());
         String outputUrl = storageService.storeTestcase(assignmentReqDto.getTestOutput());
-
-        // 하드디스크에 스켈레톤코드 저장
         String uploadUrl = storageService.unzipFile(assignmentReqDto.getMultipartFile());
 
         // 도커 이미지 생성(5분 소요)
-        String imageStoredName = UUID.randomUUID().toString();
+        String imageStoredName = assignmentReqDto.getAssignmentName().concat(RandomString.make(2).toString().toLowerCase(Locale.ROOT));
         try {
             webContainerService.buildImage(assignmentReqDto.getLanguage(), imageStoredName, assignmentReqDto.getLanguageVersion());
         } catch (Exception e) {
@@ -108,11 +106,8 @@ public class ProfessorController {
         }
 
         // db에 과제와 테스트케이스 정보 저장
-        Assignment savedAssignment = assignmentService.save(assignmentReqDto.toEntity(uploadUrl, imageStoredName));
+        Assignment savedAssignment = assignmentService.save(assignmentReqDto.toEntity(uploadUrl, imageStoredName, subject));
         testcaseService.save(new Testcase(inputUrl, outputUrl, savedAssignment));
-
-        // 과목에 과제를 연관
-        savedAssignment.setSubject(subject);
 
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(200));
     }
