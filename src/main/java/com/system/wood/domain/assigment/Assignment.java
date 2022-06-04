@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class Assignment extends BaseTimeEnity {
 
     private String imageName; // docker image name
 
+    private LocalDateTime dueDate; // 종료일
+
     @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
     private List<Testcase> testcaseList = new ArrayList<>();
 
@@ -43,13 +46,14 @@ public class Assignment extends BaseTimeEnity {
     private Subject subject;
 
     @Builder
-    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageName, Subject subject) {
+    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageName, LocalDateTime dueDate, Subject subject) {
         this.assignmentName = assignmentName;
         this.description = description;
         this.language = language;
         this.languageVersion = languageVersion;
         this.uploadUrl = uploadUrl;
         this.imageName = imageName;
+        this.dueDate = dueDate;
         this.subject = subject;
     }
 

@@ -4,10 +4,12 @@ import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.subject.Subject;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.persistence.Lob;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -31,6 +33,9 @@ public class AssignmentReqDto {
 
     private String subjectCode;
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dueDate;
+
     public Assignment toEntity(String uploadUrl, String imageName, Subject subject) {
         return Assignment.builder()
                 .assignmentName(assignmentName)
@@ -39,6 +44,7 @@ public class AssignmentReqDto {
                 .languageVersion(languageVersion)
                 .uploadUrl(uploadUrl)
                 .imageName(imageName)
+                .dueDate(dueDate)
                 .subject(subject)
                 .build();
     }
