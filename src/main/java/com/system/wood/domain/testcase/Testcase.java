@@ -1,17 +1,16 @@
 package com.system.wood.domain.testcase;
 
+import com.system.wood.domain.BaseTimeEnity;
 import com.system.wood.domain.assigment.Assignment;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Testcase {
+public class Testcase extends BaseTimeEnity {
 
     @Id
     @Column(name = "testcase_id")

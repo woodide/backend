@@ -1,15 +1,18 @@
 package com.system.wood.domain.studtosubj;
 
+import com.system.wood.domain.BaseTimeEnity;
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.student.Student;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
 @Table(name = "stud_to_subj")
-public class StudToSubj {
+@NoArgsConstructor
+public class StudToSubj extends BaseTimeEnity {
 
     @Id @GeneratedValue
     @Column(name = "stud_to_subj_id")

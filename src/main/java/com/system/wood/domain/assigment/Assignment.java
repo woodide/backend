@@ -1,5 +1,6 @@
 package com.system.wood.domain.assigment;
 
+import com.system.wood.domain.BaseTimeEnity;
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.testcase.Testcase;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "assignment")
 @NoArgsConstructor
-public class Assignment {
+public class Assignment extends BaseTimeEnity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "assignment_id")
@@ -42,13 +43,14 @@ public class Assignment {
     private Subject subject;
 
     @Builder
-    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageName) {
+    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageName, Subject subject) {
         this.assignmentName = assignmentName;
         this.description = description;
         this.language = language;
         this.languageVersion = languageVersion;
         this.uploadUrl = uploadUrl;
         this.imageName = imageName;
+        this.subject = subject;
     }
 
     public void setSubject(Subject subject) {

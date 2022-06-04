@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
 @Getter
 @MappedSuperclass
 @NoArgsConstructor
-public abstract class User {
+public abstract class User extends BaseTimeEnity{
 
     @Column(unique = true)
     private String email;

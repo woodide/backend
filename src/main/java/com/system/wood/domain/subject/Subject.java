@@ -1,8 +1,8 @@
 package com.system.wood.domain.subject;
 
 
+import com.system.wood.domain.BaseTimeEnity;
 import com.system.wood.domain.professor.Professor;
-import com.system.wood.domain.student.Student;
 import com.system.wood.domain.studtosubj.StudToSubj;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Subject {
+public class Subject extends BaseTimeEnity {
 
     @Id
     @GeneratedValue

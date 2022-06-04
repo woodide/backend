@@ -1,6 +1,7 @@
 package com.system.wood.domain.container;
 
 import com.sun.istack.NotNull;
+import com.system.wood.domain.BaseTimeEnity;
 import com.system.wood.domain.student.Student;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Container {
+public class Container extends BaseTimeEnity {
 
     @Id @GeneratedValue
     @Column(name = "container_id")
