@@ -24,7 +24,7 @@ public class Testcase extends BaseTimeEnity {
     @NotNull
     private String outputUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignment_id")
     private Assignment assignment;
 

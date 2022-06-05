@@ -41,8 +41,8 @@ public class Assignment extends BaseTimeEnity {
 
     private LocalDateTime dueDate; // 종료일
 
-    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
-    private List<Testcase> testcaseList = new ArrayList<>();
+    @OneToOne(mappedBy = "assignment", cascade = CascadeType.ALL)
+    private Testcase testcase;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
