@@ -1,6 +1,7 @@
 package com.system.wood.infra.dockercontainer;
 
 import com.system.wood.domain.container.Container;
+import com.system.wood.domain.container.ContainerRepository;
 import com.system.wood.domain.student.Student;
 import com.system.wood.global.error.BusinessException;
 import com.system.wood.global.error.ErrorCode;

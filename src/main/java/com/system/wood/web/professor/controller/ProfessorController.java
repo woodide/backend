@@ -95,7 +95,7 @@ public class ProfessorController {
         String uploadUrl = storageService.unzipFile(assignmentReqDto.getMultipartFile());
 
         // 도커 이미지 생성(5분 소요)
-        String imageStoredName = assignmentReqDto.getAssignmentName().concat(RandomString.make(2).toString().toLowerCase(Locale.ROOT));
+        String imageStoredName = assignmentReqDto.getAssignmentName().toLowerCase().replaceAll(" ","_").concat(RandomString.make(2).toLowerCase(Locale.ROOT));
         try {
             webContainerService.buildImage(assignmentReqDto.getLanguage(), imageStoredName, assignmentReqDto.getLanguageVersion());
         } catch (Exception e) {
