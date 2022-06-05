@@ -40,21 +40,23 @@ public class Container extends BaseTimeEnity {
     private Assignment assignment;
 
     @Builder
-    public Container(Integer portNum, String dockerContainerId, String containerName, String path, Student student) {
+    public Container(Integer portNum, String dockerContainerId, String containerName, String path, Student student, Assignment assignment) {
         this.portNum = portNum;
         this.dockerContainerId = dockerContainerId;
         this.containerName = containerName;
         this.path = path;
         this.student = student;
+        this.assignment = assignment;
     }
 
-    public static Container of(Integer portNum, String dockerContainerId, String containerName, String path, Student student) {
+    public static Container of(Integer portNum, String dockerContainerId, String containerName, String path, Student student, Assignment assignment) {
         return Container.builder()
                 .portNum(portNum)
                 .dockerContainerId(dockerContainerId)
                 .containerName(containerName)
                 .student(student)
                 .path(path)
+                .assignment(assignment)
                 .build();
     }
 

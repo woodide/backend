@@ -23,9 +23,9 @@ public class ContainerService {
     }
 
     @Transactional
-    public Long save(Container container) {
+    public Container save(Container container) {
         Container savedContainer = containerRepository.save(container);
-        return savedContainer.getId();
+        return savedContainer;
     }
 
     @Transactional
