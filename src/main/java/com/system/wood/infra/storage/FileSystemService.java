@@ -1,6 +1,8 @@
 package com.system.wood.infra.storage;
 
+import com.system.wood.domain.container.Container;
 import com.system.wood.global.error.StorageException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +17,7 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@Slf4j
 @Service
 public class FileSystemService implements StorageService {
 
@@ -80,6 +83,24 @@ public class FileSystemService implements StorageService {
         }
 
         return targetDir.toString()+ "/"+ deleteExt(zipFile.getOriginalFilename());
+    }
+
+    public void locateSkeletonCode(Container container) {
+        String target = container.getPath() + "/workspace";
+        String sourcePath = container.getAssignment().getUploadUrl();
+
+        String command = new StringBuilder("cp -R ")
+                .append(sourcePath)
+                .append("/. ")
+                .append(target)
+                .toString();
+        try {
+            Process process = Runtime.getRuntime()
+                    .exec(command);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new StorageException("스켈레톤 코드를 복사할 수 없습니다.");
+        }
     }
 
     private boolean isNotArchive(MultipartFile file) {
