@@ -29,7 +29,7 @@ public class WebContainerController {
     public ResponseEntity<ResponseDto> createContainer(@AuthenticationPrincipal String email, @RequestBody ContainerReqDto containerReuestDto){
 
         Student student = userService.findStudent(email);
-        String containerName = containerReuestDto.getContainerName() + student.getStudentNumber();
+        String containerName = containerReuestDto.getImageName() + student.getStudentNumber();
         String imageName = containerReuestDto.getImageName();
 
         try {
@@ -59,6 +59,4 @@ public class WebContainerController {
             return new ResponseEntity<>(ResponseDto.of(ReturnStatus.FAIL, e.getMessage()), HttpStatus.valueOf(400));
         }
     }
-
-
 }

@@ -5,9 +5,5 @@ import lombok.Getter;
 
 @Getter
 public class ContainerReqDto {
-
-    @NotNull
-    private String containerName;
-
     private String imageName;
 }
