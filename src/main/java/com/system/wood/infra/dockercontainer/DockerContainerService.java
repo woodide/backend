@@ -1,7 +1,7 @@
 package com.system.wood.infra.dockercontainer;
 
+import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.container.Container;
-import com.system.wood.domain.container.ContainerRepository;
 import com.system.wood.domain.student.Student;
 import com.system.wood.global.error.BusinessException;
 import com.system.wood.global.error.ErrorCode;
@@ -35,7 +35,7 @@ public class DockerContainerService {
     private String containerPath;
 
     @Transactional
-    public Container createContainer(String containerName, String imageName, Student user) throws IOException, BusinessException {
+    public Container createContainer(String containerName, String imageName, Student user, Assignment assignment) throws IOException, BusinessException {
         Integer pgID = 82; // 고민: 나중에 만들 과제 테이블의 id를 저장하자.
         Integer portNum = findFreePort();
         String path = containerPath + containerName + portNum;
@@ -62,7 +62,7 @@ public class DockerContainerService {
             throw new BusinessException(ErrorCode.CANNOT_CREATE_CONTAINER);
         }
 
-        return Container.of(portNum, output, containerName, path, user);
+        return Container.of(portNum, output, containerName, path, user, assignment);
     }
 
     @Transactional
