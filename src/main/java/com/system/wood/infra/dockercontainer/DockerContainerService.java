@@ -36,15 +36,13 @@ public class DockerContainerService {
 
     @Transactional
     public Container createContainer(String containerName, String imageName, Student user, Assignment assignment) throws IOException, BusinessException {
-        Integer pgID = 82; // 고민: 나중에 만들 과제 테이블의 id를 저장하자.
+        Integer PUID = 82;
+        Integer PGID = 82;
         Integer portNum = findFreePort();
         String path = containerPath + containerName + portNum;
 
         // container를 생성하는 command 작성
-        String command = createCommand(user.getId(), pgID, portNum, containerName, imageName);
-
-        // directory 생성
-        makeDirectory(path);
+        String command = createCommand(PUID, PGID, portNum, containerName, imageName);
 
         // command 실행과 stdout, stderr 결과 획득
         Process process = Runtime.getRuntime()
@@ -104,13 +102,13 @@ public class DockerContainerService {
         deleteDirectory(path);
     }
 
-    private String createCommand(Long memberId, Integer pgID, Integer portNum, String containerName, String imageName) {
+    private String createCommand(Integer PUID, Integer PGID, Integer portNum, String containerName, String imageName) {
         String path = containerPath + containerName + portNum;
 
         return new StringBuilder().append("docker run -d --name=")
                 .append(containerName)
-                .append(" -e PUID=").append(memberId)
-                .append(" -e PGID=").append(pgID)
+                .append(" -e PUID=").append(PUID)
+                .append(" -e PGID=").append(PGID)
                 .append(" -e TZ=Asia/Seoul")
                 .append(" -e SUDO_PASSWORD=password")
                 .append(" -p ")
