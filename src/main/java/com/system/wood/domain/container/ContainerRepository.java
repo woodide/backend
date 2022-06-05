@@ -9,4 +9,7 @@ public interface ContainerRepository extends JpaRepository<Container, Long> {
 
     @Query("select c.portNum from Container c")
     List<Integer> getAllPorts();
+
+    Container findContainerByContainerName(String containerName);
+
 }

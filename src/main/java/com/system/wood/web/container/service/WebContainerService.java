@@ -23,11 +23,16 @@ public class WebContainerService {
     private final DockerCompileService dockerCompileService;
 
     @Transactional
-    public void createContainer(String containerName, String imageName, Student user) throws IOException {
+    public Container createContainer(String containerName, String imageName, Student user) throws IOException {
+        Container alreadyContainer = containerService.getContainerByName(containerName);
+        if(alreadyContainer != null) { // 이미 만들었다면 만든 것 바로 반환
+            return alreadyContainer;
+        }
         Container newContainer = infraService.createContainer(containerName, imageName, user);
 
         // todo: 과제에서 기본 세팅 파일을 움직이는 로직이 필요함.
         containerService.save(newContainer);
+        return newContainer;
     }
 
     @Transactional
