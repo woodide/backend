@@ -25,6 +25,8 @@ public class AssignmentReqDto {
 
     private String languageVersion;
 
+    private String targetFileName;
+
     private MultipartFile multipartFile;
 
     private MultipartFile testInput;
@@ -44,6 +46,7 @@ public class AssignmentReqDto {
                 .languageVersion(languageVersion)
                 .uploadUrl(uploadUrl)
                 .imageName(imageName)
+                .targetFileName(targetFileName)
                 .dueDate(dueDate)
                 .subject(subject)
                 .build();
