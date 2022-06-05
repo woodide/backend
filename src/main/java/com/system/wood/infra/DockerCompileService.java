@@ -67,7 +67,10 @@ public class DockerCompileService {
         if(!Files.isDirectory(dirPath))
             Files.createDirectory(dirPath);
         Path filePath = Paths.get(imagePath, imageName);
-        Files.writeString(filePath, dockerBody, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        if(!Files.isDirectory(filePath))
+            Files.createDirectory(filePath);
+        Path target = Paths.get(imagePath, imageName, "dockerfile");
+        Files.writeString(target, dockerBody, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
 
@@ -94,6 +97,6 @@ public class DockerCompileService {
     }
 
     public String makeBuildCommand(String imageName) {
-        return new StringBuilder().append("docker build --no-cache --tag ").append(imageName).append(" ").append(Paths.get(imagePath, "build")).toString();
+        return new StringBuilder().append("docker build --no-cache --tag ").append(imageName).append(" ").append(Paths.get(imagePath, imageName)).toString();
     }
 }
