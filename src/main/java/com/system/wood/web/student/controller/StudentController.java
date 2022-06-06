@@ -1,14 +1,16 @@
 package com.system.wood.web.student.controller;
 
 import com.system.wood.domain.assigment.Assignment;
+import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.container.ContainerService;
+import com.system.wood.domain.result.Result;
 import com.system.wood.domain.result.ResultService;
 import com.system.wood.domain.student.Student;
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.subject.SubjectService;
 import com.system.wood.infra.GradingService;
-import com.system.wood.infra.dto.GradingDto;
+import com.system.wood.infra.dto.ResultDto;
 import com.system.wood.infra.storage.StorageService;
 import com.system.wood.web.professor.dto.AssignmentResDto;
 import com.system.wood.web.professor.dto.SubjectDto;
@@ -23,6 +25,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +40,7 @@ public class StudentController {
     private final StorageService storageService;
     private final GradingService gradingService;
     private final ResultService resultService;
+    private final AssignmentService assignmentService;
 
     @GetMapping("/subject")
     public ResponseEntity<List<SubjectDto>> getSubjectList(@AuthenticationPrincipal String email) {
@@ -53,7 +57,7 @@ public class StudentController {
     }
 
     @PostMapping("/subject/assignment/submit")
-    public ResponseEntity<GradingDto> submitAssignment(@AuthenticationPrincipal String email, @RequestBody AsgnSubmDto asgnSubmDto) {
+    public ResponseEntity<ResultDto> submitAssignment(@AuthenticationPrincipal String email, @RequestBody AsgnSubmDto asgnSubmDto) {
         Container container = containerService.getContainer(asgnSubmDto.getPortNum());
         Assignment assignment = container.getAssignment();
         // 로그인한 학생이 컨테이너를 소유하고 있는지 확인
@@ -63,12 +67,22 @@ public class StudentController {
         String target = storageService.locateTarget(container, assignment);
 
         // 채점
-        GradingDto gradingDto = gradingService.execute(assignment, container, target);
+        ResultDto gradingDto = gradingService.execute(assignment, container, target);
 
         // 채점 결과 저장
         resultService.save(gradingDto.toEntity(container.getStudent(), assignment));
 
         return new ResponseEntity<>(gradingDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/subject/assignment/result")
+    public ResponseEntity<List<ResultDto>> getGradingResult(@AuthenticationPrincipal String email, @RequestParam("imageName") String imageName) {
+        Assignment assignment = assignmentService.getAssignment(imageName);
+        Student student = userService.findStudent(email);
+        List<Result> resultList = resultService.getResultList(student, assignment);
+        List<ResultDto> resultDtoList = resultList.stream().map(ResultDto::from).collect(Collectors.toList());
+
+        return new ResponseEntity<>(resultDtoList, HttpStatus.OK);
     }
 
 }

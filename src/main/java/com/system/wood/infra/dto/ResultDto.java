@@ -8,14 +8,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GradingDto {
+public class ResultDto {
 
-    private String result;
+    private String executionResult;
     private String submitCode;
     private Double score;
 
-    public GradingDto(String result, String submitCode, Double score) {
-        this.result = result;
+    public ResultDto(String executionResult, String submitCode, Double score) {
+        this.executionResult = executionResult;
         this.submitCode = submitCode;
         this.score = score;
     }
@@ -23,10 +23,14 @@ public class GradingDto {
     public Result toEntity(Student student, Assignment assignment) {
         return Result.builder()
                 .score(score)
-                .executionResult(result)
+                .executionResult(executionResult)
                 .submitCode(submitCode)
                 .student(student)
                 .assignment(assignment)
                 .build();
+    }
+
+    public static ResultDto from(Result result) {
+        return new ResultDto(result.getExecutionResult(), result.getSubmitCode(), result.getScore());
     }
 }

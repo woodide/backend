@@ -5,11 +5,13 @@ import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.student.Student;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Getter
 @Entity
+@Getter
+@NoArgsConstructor
 public class Result extends BaseTimeEnity {
 
     @Id @GeneratedValue

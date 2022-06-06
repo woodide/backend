@@ -5,7 +5,7 @@ import com.system.wood.domain.container.Container;
 import com.system.wood.domain.testcase.Testcase;
 import com.system.wood.global.error.StorageException;
 import com.system.wood.infra.dto.CompileDto;
-import com.system.wood.infra.dto.GradingDto;
+import com.system.wood.infra.dto.ResultDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class GradingService {
     private final String cLang = "gcc";
     private final String python = "python";
 
-    public GradingDto execute(Assignment assignment, Container container, String target) {
+    public ResultDto execute(Assignment assignment, Container container, String target) {
         String language = assignment.getLanguage();
         String submitCode = getSubmitCode(assignment, target);
         String result;
@@ -47,7 +47,7 @@ public class GradingService {
         // 채점
         Double grade = grade(result, assignment.getTestcase());
         log.info("점수는 "+grade);
-        return new GradingDto(result, submitCode, grade);
+        return new ResultDto(result, submitCode, grade);
     }
 
     private Double grade(String result, Testcase testcase) {
