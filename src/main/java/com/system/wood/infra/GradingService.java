@@ -5,6 +5,7 @@ import com.system.wood.domain.container.Container;
 import com.system.wood.domain.testcase.Testcase;
 import com.system.wood.global.error.StorageException;
 import com.system.wood.infra.dto.CompileDto;
+import com.system.wood.infra.dto.GradingDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -23,39 +24,39 @@ public class GradingService {
     private final String cLang = "gcc";
     private final String python = "python";
 
-    public String execute(Assignment assignment, Container container, String target) {
+    public GradingDto execute(Assignment assignment, Container container, String target) {
         String language = assignment.getLanguage();
+        String submitCode = getSubmitCode(assignment, target);
         String result;
 
         if (language.equals(cLang)) {
-
             // 컴파일
             CompileDto compileDto = compileCLang(assignment, container, target);
             if (!compileDto.getCompileSuccess())
-                return compileDto.getCompileResult();
+                throw new RuntimeException("컴파일 실패");
 
             // 실행
             result = executeCLang(assignment, container, compileDto.getExeFileName());
-
         } else if (language.equals(python)) {
+            // 실행
             result = executePython(assignment, target);
         } else {
             throw new RuntimeException("일치하는 언어가 없습니다.");
         }
 
         // 채점
-        Float grade = grade(result, assignment.getTestcase());
+        Double grade = grade(result, assignment.getTestcase());
         log.info("점수는 "+grade);
-        return result;
+        return new GradingDto(result, submitCode, grade);
     }
 
-    private Float grade(String result, Testcase testcase) {
+    private Double grade(String result, Testcase testcase) {
         String[] resultList = result.split(System.getProperty("line.separator"));
         List<String> cmpList;
         try {
             cmpList = Files.readAllLines(Path.of(testcase.getOutputUrl()));
         } catch (IOException e) {
-            return 100F;
+            return 100D;
         }
         int length = resultList.length;
         int numberOfSameLine = 0;
@@ -66,7 +67,7 @@ public class GradingService {
             }
         }
 
-        return (float) numberOfSameLine * 100 / max;
+        return Math.ceil((double)numberOfSameLine * 100 / max);
     }
 
     private String executeCLang(Assignment assignment, Container container, String exeFileName) {
@@ -94,10 +95,20 @@ public class GradingService {
                 stringBuilder.append(s)
                         .append(System.getProperty("line.separator"));
             }
+            log.info("파일 실행");
             return stringBuilder.toString();
         } catch (IOException e) {
             e.printStackTrace();
             return "실행 불가";
+        }
+    }
+
+    private String getSubmitCode(Assignment assignment, String target) {
+        try {
+            String submitCode = Files.readString(Path.of(assignment.getUploadUrl(), target));
+            return submitCode;
+        } catch (IOException e) {
+            throw new RuntimeException("제출할 파일이 존재하지 않습니다.");
         }
     }
 
@@ -124,6 +135,7 @@ public class GradingService {
                 stringBuilder.append(s)
                         .append(System.getProperty("line.separator"));
             }
+            log.info("파일 실행");
             return stringBuilder.toString();
         } catch (IOException e) {
             e.printStackTrace();

@@ -7,9 +7,8 @@ import com.system.wood.domain.student.Student;
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.subject.SubjectService;
 import com.system.wood.infra.GradingService;
+import com.system.wood.infra.dto.GradingDto;
 import com.system.wood.infra.storage.StorageService;
-import com.system.wood.web.container.dto.ResponseDto;
-import com.system.wood.web.container.dto.ReturnStatus;
 import com.system.wood.web.professor.dto.AssignmentResDto;
 import com.system.wood.web.professor.dto.SubjectDto;
 import com.system.wood.web.student.dto.AsgnSubmDto;
@@ -52,7 +51,7 @@ public class StudentController {
     }
 
     @PostMapping("/subject/assignment/submit")
-    public ResponseEntity<ResponseDto> submitAssignment(@AuthenticationPrincipal String email, @RequestBody AsgnSubmDto asgnSubmDto) {
+    public ResponseEntity<GradingDto> submitAssignment(@AuthenticationPrincipal String email, @RequestBody AsgnSubmDto asgnSubmDto) {
         Container container = containerService.getContainer(asgnSubmDto.getPortNum());
         Assignment assignment = container.getAssignment();
         // 로그인한 학생이 컨테이너를 소유하고 있는지 확인
@@ -62,9 +61,11 @@ public class StudentController {
         String target = storageService.locateTarget(container, assignment);
 
         // 채점
-        String result = gradingService.execute(assignment, container, target);
+        GradingDto gradingDto = gradingService.execute(assignment, container, target);
 
-        return new ResponseEntity<>(ResponseDto.of(ReturnStatus.SUCCESS, result), HttpStatus.OK);
+        // 채점 결과 저장
+
+        return new ResponseEntity<>(gradingDto, HttpStatus.OK);
     }
 
 }
