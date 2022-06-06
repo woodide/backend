@@ -7,6 +7,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 @Controller
 @Slf4j
@@ -14,10 +17,10 @@ import org.springframework.stereotype.Controller;
 public class ChatController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @MessageMapping("/send/{imageName}")
-    public void send(@DestinationVariable String imageName,ChatMessage chatMessage) throws Exception {
-      //  String time = new SimpleDateFormat("HH:mm").format(new Date());
-        log.info(imageName);
-        simpMessagingTemplate.convertAndSend("/assignment/" + imageName,chatMessage);
+    @MessageMapping("/send/{roomId}")
+    public void send(@DestinationVariable String roomId,ChatMessage chatMessage) throws Exception {
+        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        log.info(roomId);
+        simpMessagingTemplate.convertAndSend("/assignment/" + roomId, new ChatMessage(chatMessage.getFrom(),chatMessage.getText(),time));
     }
 }
