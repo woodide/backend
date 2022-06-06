@@ -105,13 +105,14 @@ public class FileSystemService implements StorageService {
         }
     }
 
-    public void locateTarget(Container container, Assignment assignment) {
+    public String locateTarget(Container container, Assignment assignment) {
         String sourcePathDir = container.getPath() + "/workspace";
         String sourceFileName = assignment.getTargetFileName();
         String assignmentDir = assignment.getUploadUrl();
+        String targetFileName = container.getStudent().getStudentNumber() + "." + extractExt(sourceFileName);
 
         Path source = Path.of(sourcePathDir, sourceFileName);
-        Path target = Path.of(assignmentDir, container.getStudent().getStudentNumber());
+        Path target = Path.of(assignmentDir, targetFileName);
 
         try {
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
@@ -120,6 +121,7 @@ public class FileSystemService implements StorageService {
             throw new StorageException("제출 파일을 복사할 수 없습니다.");
         }
         log.info("파일 이동 성공");
+        return targetFileName;
     }
 
     private boolean isNotArchive(MultipartFile file) {

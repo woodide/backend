@@ -6,8 +6,10 @@ import com.system.wood.domain.container.ContainerService;
 import com.system.wood.domain.student.Student;
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.subject.SubjectService;
+import com.system.wood.infra.GradingService;
 import com.system.wood.infra.storage.StorageService;
 import com.system.wood.web.container.dto.ResponseDto;
+import com.system.wood.web.container.dto.ReturnStatus;
 import com.system.wood.web.professor.dto.AssignmentResDto;
 import com.system.wood.web.professor.dto.SubjectDto;
 import com.system.wood.web.student.dto.AsgnSubmDto;
@@ -33,6 +35,7 @@ public class StudentController {
     private final ContainerService containerService;
     private final UserValidator userValidator;
     private final StorageService storageService;
+    private final GradingService gradingService;
 
     @GetMapping("/subject")
     public ResponseEntity<List<SubjectDto>> getSubjectList(@AuthenticationPrincipal String email) {
@@ -56,11 +59,12 @@ public class StudentController {
         userValidator.validateStudent(email, asgnSubmDto.getPortNum());
 
         // 파일 복사
-        storageService.locateTarget(container, assignment);
+        String target = storageService.locateTarget(container, assignment);
 
         // 채점
+        String result = gradingService.execute(assignment, container, target);
 
-
-        return new ResponseEntity<ResponseDto>(ResponseDto.getSuccessDto(), HttpStatus.OK);
+        return new ResponseEntity<>(ResponseDto.of(ReturnStatus.SUCCESS, result), HttpStatus.OK);
     }
+
 }

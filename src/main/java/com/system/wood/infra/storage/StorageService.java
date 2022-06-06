@@ -12,6 +12,6 @@ public interface StorageService {
 
     void locateSkeletonCode(Container container);
 
-    void locateTarget(Container container, Assignment assignment);
+    String locateTarget(Container container, Assignment assignment);
 
 }
