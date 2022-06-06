@@ -109,10 +109,12 @@ public class FileSystemService implements StorageService {
         String sourcePathDir = container.getPath() + "/workspace";
         String sourceFileName = assignment.getTargetFileName();
         String assignmentDir = assignment.getUploadUrl();
-        File source = new File(sourcePathDir, sourceFileName);
-        File targetDir = new File(assignmentDir);
+
+        Path source = Path.of(sourcePathDir, sourceFileName);
+        Path target = Path.of(assignmentDir, container.getStudent().getStudentNumber());
+
         try {
-            FileUtils.copyFileToDirectory(source, targetDir);
+            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             e.printStackTrace();
             throw new StorageException("제출 파일을 복사할 수 없습니다.");
