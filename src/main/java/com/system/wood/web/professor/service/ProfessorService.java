@@ -21,14 +21,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProfessorService {
 
-    @Autowired
-    private SubjectRepository subjectRepository;
-    @Autowired
-    private ProfessorRepository professorRepository;
-    @Autowired
-    private StudentRepository studentRepository;
-    @Autowired
-    private StudToSubjRepository studToSubjRepository;
+    private final SubjectRepository subjectRepository;
+    private final ProfessorRepository professorRepository;
+    private final StudentRepository studentRepository;
+    private final StudToSubjRepository studToSubjRepository;
 
     public Subject findById(Long id) {
         return subjectRepository.findById(id).orElseThrow(
@@ -50,6 +46,7 @@ public class ProfessorService {
     @Transactional
     public void saveStudentList(List<String> studentNumberList, Subject subject) {
         List<Student> studentList = studentRepository.findByStudentNumberIn(studentNumberList);
+        studToSubjRepository.deleteBySubject(subject); // 기존에 있던 멤버들 다 삭제 후 재갱신
         studentList.stream()
                 .map(student -> new StudToSubj(student, subject))
                 .forEach(studToSubjRepository::save);
