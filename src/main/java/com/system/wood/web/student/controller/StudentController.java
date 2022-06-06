@@ -3,6 +3,7 @@ package com.system.wood.web.student.controller;
 import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.container.ContainerService;
+import com.system.wood.domain.result.ResultService;
 import com.system.wood.domain.student.Student;
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.subject.SubjectService;
@@ -35,6 +36,7 @@ public class StudentController {
     private final UserValidator userValidator;
     private final StorageService storageService;
     private final GradingService gradingService;
+    private final ResultService resultService;
 
     @GetMapping("/subject")
     public ResponseEntity<List<SubjectDto>> getSubjectList(@AuthenticationPrincipal String email) {
@@ -64,6 +66,7 @@ public class StudentController {
         GradingDto gradingDto = gradingService.execute(assignment, container, target);
 
         // 채점 결과 저장
+        resultService.save(gradingDto.toEntity(container.getStudent(), assignment));
 
         return new ResponseEntity<>(gradingDto, HttpStatus.OK);
     }
