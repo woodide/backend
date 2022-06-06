@@ -1,7 +1,10 @@
 package com.system.wood.web.container.controller;
 
+import com.system.wood.domain.assigment.Assignment;
+import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.student.Student;
+import com.system.wood.infra.storage.StorageService;
 import com.system.wood.web.container.service.WebContainerService;
 import com.system.wood.web.container.dto.ContainerDelDto;
 import com.system.wood.web.container.dto.ContainerReqDto;
@@ -24,6 +27,8 @@ public class WebContainerController {
 
     private final WebContainerService webContainerService;
     private final UserService userService;
+    private final AssignmentService assignmentService;
+    private final StorageService storageService;
 
     @ResponseBody
     @PostMapping("/container")
@@ -32,9 +37,11 @@ public class WebContainerController {
         Student student = userService.findStudent(email);
         String containerName = containerReuestDto.getImageName() + student.getStudentNumber();
         String imageName = containerReuestDto.getImageName();
+        Assignment assignment = assignmentService.getAssignment(containerReuestDto.getImageName());
 
         try {
-            Container container =  webContainerService.createContainer(containerName, imageName, student);
+            Container container =  webContainerService.createContainer(containerName, imageName, student, assignment);
+            storageService.locateSkeletonCode(container);
             return new ResponseEntity<>(ResponseDto.of(ReturnStatus.SUCCESS, container.getPortNum().toString()), HttpStatus.valueOf(201));
         } catch (IOException e) {
             e.printStackTrace();

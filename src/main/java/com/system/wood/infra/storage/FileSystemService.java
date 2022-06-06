@@ -1,6 +1,10 @@
 package com.system.wood.infra.storage;
 
+import com.system.wood.domain.assigment.Assignment;
+import com.system.wood.domain.container.Container;
 import com.system.wood.global.error.StorageException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +19,7 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@Slf4j
 @Service
 public class FileSystemService implements StorageService {
 
@@ -80,6 +85,39 @@ public class FileSystemService implements StorageService {
         }
 
         return targetDir.toString()+ "/"+ deleteExt(zipFile.getOriginalFilename());
+    }
+
+    public void locateSkeletonCode(Container container) {
+        String target = container.getPath() + "/workspace";
+        String sourcePath = container.getAssignment().getUploadUrl();
+
+        String command = new StringBuilder("cp -R ")
+                .append(sourcePath)
+                .append("/. ")
+                .append(target)
+                .toString();
+        try {
+            Process process = Runtime.getRuntime()
+                    .exec(command);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new StorageException("스켈레톤 코드를 복사할 수 없습니다.");
+        }
+    }
+
+    public void locateTarget(Container container, Assignment assignment) {
+        String sourcePathDir = container.getPath() + "/workspace";
+        String sourceFileName = assignment.getTargetFileName();
+        String assignmentDir = assignment.getUploadUrl();
+        File source = new File(sourcePathDir, sourceFileName);
+        File targetDir = new File(assignmentDir);
+        try {
+            FileUtils.copyFileToDirectory(source, targetDir);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new StorageException("제출 파일을 복사할 수 없습니다.");
+        }
+        log.info("파일 이동 성공");
     }
 
     private boolean isNotArchive(MultipartFile file) {

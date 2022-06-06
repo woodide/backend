@@ -37,23 +37,26 @@ public class Assignment extends BaseTimeEnity {
     @Column(unique = true)
     private String imageName; // docker image name
 
+    private String targetFileName;
+
     private LocalDateTime dueDate; // 종료일
 
-    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
-    private List<Testcase> testcaseList = new ArrayList<>();
+    @OneToOne(mappedBy = "assignment", cascade = CascadeType.ALL)
+    private Testcase testcase;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
     @Builder
-    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageName, LocalDateTime dueDate, Subject subject) {
+    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageName, String targetFileName, LocalDateTime dueDate, Subject subject) {
         this.assignmentName = assignmentName;
         this.description = description;
         this.language = language;
         this.languageVersion = languageVersion;
         this.uploadUrl = uploadUrl;
         this.imageName = imageName;
+        this.targetFileName = targetFileName;
         this.dueDate = dueDate;
         this.subject = subject;
     }

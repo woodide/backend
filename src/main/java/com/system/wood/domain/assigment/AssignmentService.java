@@ -38,6 +38,13 @@ public class AssignmentService {
                 ));
     }
 
+    public Assignment getAssignment(String imageName) {
+        return assignmentRepository.findByImageName(imageName).orElseThrow(() ->
+                new EntityNotFoundException(
+                        String.format("이미지 이름이 %s인 과제가 존재하지 않습니다.", imageName)
+                ));
+    }
+
     public List<Assignment> getAssignmentList(Subject subject) {
         return assignmentRepository.findBySubject(subject);
     }
