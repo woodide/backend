@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -93,6 +93,8 @@ public class ProfessorController {
         String inputUrl = storageService.storeTestcase(assignmentReqDto.getTestInput());
         String outputUrl = storageService.storeTestcase(assignmentReqDto.getTestOutput());
         String uploadUrl = storageService.unzipFile(assignmentReqDto.getMultipartFile());
+        File uploadFile = new File(uploadUrl);
+        if(!new File(uploadUrl).isDirectory()) uploadUrl = uploadFile.toPath().getParent().toString();
 
         // 도커 이미지 생성(5분 소요)
         String imageStoredName = assignmentReqDto.getAssignmentName().toLowerCase().replaceAll(" ","_").concat(RandomString.make(2).toLowerCase(Locale.ROOT));
