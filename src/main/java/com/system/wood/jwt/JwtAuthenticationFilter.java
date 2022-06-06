@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request); //request에서 jwt 토큰을 꺼낸다.
 
-            if (!jwt.isEmpty() && JwtTokenProvider.validateToken(jwt)) {
+            if (jwt != null && !jwt.isEmpty() && JwtTokenProvider.validateToken(jwt)) {
                 String userId = JwtTokenProvider.getUserIdFromJWT(jwt); //jwt에서 사용자 id를 꺼낸다.
                 List<GrantedAuthority> role = new ArrayList<>();
                 role.add(new SimpleGrantedAuthority("ROLE_" + JwtTokenProvider.getRoleFromJWT(jwt)));
@@ -34,11 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication); //세션에서 계속 사용하기 위해 securityContext에 Authentication 등록
             } else {
-                if (jwt.isEmpty()) {
+                if (jwt == null || jwt.isEmpty()) {
                     request.setAttribute("unauthorization", "401 인증키 없음.");
                 }
-
-                if (JwtTokenProvider.validateToken(jwt)) {
+                else if (JwtTokenProvider.validateToken(jwt)) {
                     request.setAttribute("unauthorization", "401-001 인증키 만료.");
                 }
             }

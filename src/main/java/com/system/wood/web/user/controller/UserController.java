@@ -33,20 +33,20 @@ public class UserController {
     private ProfessorService professorService;
 
     @GetMapping("/list/student")
-    public ResponseEntity<List<StudResDto>> allStudent(){
+    public ResponseEntity<List<StudResDto>> allStudent() {
         List<StudResDto> studResDtoList = userService.findAll().stream().map(student -> new StudResDto(student.getStudentNumber(), student.getEmail(), student.getUsername())).collect(Collectors.toList());
         return new ResponseEntity<>(studResDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/list/professor")
-    public ResponseEntity<List<ProfessorDto>> allProfessor(){
+    public ResponseEntity<List<ProfessorDto>> allProfessor() {
         List<ProfessorDto> professorDtoList = professorService.findAll().stream().map(professor -> new ProfessorDto(professor.getEmail(), professor.getUsername())).collect(Collectors.toList());
         return new ResponseEntity<>(professorDtoList, HttpStatus.OK);
     }
 
     @PostMapping("/signup/student")
-    public ResponseEntity<ResponseDto> createStudent(@RequestBody StudSignupDto studSignupDto){
-        if(userService.isDuplicated(studSignupDto.getEmail())){
+    public ResponseEntity<ResponseDto> createStudent(@RequestBody StudSignupDto studSignupDto) {
+        if (userService.isDuplicated(studSignupDto.getEmail())) {
             throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
         }
         userService.saveStudent(studSignupDto.toEntity());
@@ -54,8 +54,8 @@ public class UserController {
     }
 
     @PostMapping("/signup/professor")
-    public ResponseEntity<ResponseDto> createProfessor(@RequestBody ProfSignUpDto profSignUpDto){
-        if(userService.isDuplicated(profSignUpDto.getEmail())){
+    public ResponseEntity<ResponseDto> createProfessor(@RequestBody ProfSignUpDto profSignUpDto) {
+        if (userService.isDuplicated(profSignUpDto.getEmail())) {
             throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
         }
         userService.saveProfessor(profSignUpDto.toEntity());
@@ -67,12 +67,11 @@ public class UserController {
         try {
             User user = userService.login(request);
             String token = JwtTokenProvider.generateToken(user.getEmail(), user.getRole().toString());
-            LoginResDto loginResDto= (user instanceof Professor)
-                    ? new LoginResDto(token, Boolean.TRUE)
-                    : new LoginResDto(token, Boolean.FALSE);
+            LoginResDto loginResDto = (user instanceof Professor)
+                    ? new LoginResDto(token, user.getUsername(), user.getEmail(), Boolean.TRUE)
+                    : new LoginResDto(token, user.getUsername(), user.getEmail(), Boolean.FALSE);
             return new ResponseEntity<>(loginResDto, HttpStatus.OK);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
     }
