@@ -90,18 +90,27 @@ public class FileSystemService implements StorageService {
     public void locateSkeletonCode(Container container) {
         String target = container.getPath() + "/workspace";
         String sourcePath = container.getAssignment().getUploadUrl();
-
-        String command = new StringBuilder("cp -R ")
-                .append(sourcePath)
-                .append("/. ")
-                .append(target)
-                .toString();
-        try {
-            Process process = Runtime.getRuntime()
-                    .exec(command);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new StorageException("스켈레톤 코드를 복사할 수 없습니다.");
+        File file = new File(sourcePath);
+        if (file.isFile()) {
+            try {
+                FileUtils.copyFileToDirectory(file, new File(target));
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new StorageException("스켈레톤 코드를 복사할 수 없습니다.");
+            }
+        } else {
+            String command = new StringBuilder("cp -R ")
+                    .append(sourcePath)
+                    .append("/. ")
+                    .append(target)
+                    .toString();
+            try {
+                Process process = Runtime.getRuntime()
+                        .exec(command);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new StorageException("스켈레톤 코드를 복사할 수 없습니다.");
+            }
         }
     }
 
