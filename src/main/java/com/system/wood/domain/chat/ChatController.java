@@ -18,9 +18,9 @@ public class ChatController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/send/{roomId}")
-    public void send(@DestinationVariable String roomId,ChatMessage chatMessage) throws Exception {
+    public void send(@DestinationVariable String roomId,ChatMessage chatMessage) {
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        log.info(roomId);
-        simpMessagingTemplate.convertAndSend("/assignment/" + roomId, new ChatMessage(chatMessage.getFrom(),chatMessage.getText(),time));
+        log.info(roomId,time);
+        simpMessagingTemplate.convertAndSend("/assignment/" + roomId, new ChatMessage(chatMessage.getFrom(),chatMessage.getText(),chatMessage.getIsProfessor(), time));
     }
 }
