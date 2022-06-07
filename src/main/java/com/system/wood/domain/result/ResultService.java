@@ -24,4 +24,8 @@ public class ResultService {
     public List<Result> getResultList(Student student, Assignment assignment) {
         return resultRepository.findByStudentAndAssignment(student, assignment);
     }
+
+    public Result getBestResult(Student student, Assignment assignment) {
+        return resultRepository.findTop1ByStudentAndAssignmentOrderByScoreDesc(student, assignment);
+    }
 }

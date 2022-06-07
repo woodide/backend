@@ -15,6 +15,7 @@ import com.system.wood.infra.storage.StorageService;
 import com.system.wood.web.professor.dto.AssignmentResDto;
 import com.system.wood.web.professor.dto.SubjectDto;
 import com.system.wood.web.student.dto.AsgnSubmDto;
+import com.system.wood.web.student.dto.ResultResDto;
 import com.system.wood.web.student.service.StudentService;
 import com.system.wood.web.user.service.UserService;
 import com.system.wood.web.user.service.UserValidator;
@@ -76,13 +77,21 @@ public class StudentController {
     }
 
     @GetMapping("/subject/assignment/result")
-    public ResponseEntity<List<ResultDto>> getGradingResult(@AuthenticationPrincipal String email, @RequestParam("imageName") String imageName) {
+    public ResponseEntity<List<ResultResDto>> getGradingResultList(@AuthenticationPrincipal String email, @RequestParam("imageName") String imageName) {
         Assignment assignment = assignmentService.getAssignment(imageName);
         Student student = userService.findStudent(email);
         List<Result> resultList = resultService.getResultList(student, assignment);
-        List<ResultDto> resultDtoList = resultList.stream().map(ResultDto::from).collect(Collectors.toList());
+        List<ResultResDto> resultDtoList = resultList.stream().map(ResultResDto::from).collect(Collectors.toList());
 
         return new ResponseEntity<>(resultDtoList, HttpStatus.OK);
     }
 
+    @GetMapping("/subject/assignment/result/best")
+    public ResponseEntity<ResultResDto> getBestGradingResult(@AuthenticationPrincipal String email, @RequestParam("imageName") String imageName) {
+        Assignment assignment = assignmentService.getAssignment(imageName);
+        Student student = userService.findStudent(email);
+        Result bestResult = resultService.getBestResult(student, assignment);
+
+        return new ResponseEntity<>(ResultResDto.from(bestResult), HttpStatus.OK);
+    }
 }

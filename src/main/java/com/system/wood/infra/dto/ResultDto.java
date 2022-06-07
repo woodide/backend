@@ -29,8 +29,4 @@ public class ResultDto {
                 .assignment(assignment)
                 .build();
     }
-
-    public static ResultDto from(Result result) {
-        return new ResultDto(result.getExecutionResult(), result.getSubmitCode(), result.getScore());
-    }
 }

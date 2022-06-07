@@ -9,4 +9,6 @@ import java.util.List;
 public interface ResultRepository extends JpaRepository<Result, Long> {
 
     List<Result> findByStudentAndAssignment(Student student, Assignment assignment);
+
+    Result findTop1ByStudentAndAssignmentOrderByScoreDesc(Student student, Assignment assignment);
 }
