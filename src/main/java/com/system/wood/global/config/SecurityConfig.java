@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/professor/**").hasRole("PROFESSOR")
                     .antMatchers("/student/**").hasAnyRole("PROFESSOR","STUDENT")
+                    .antMatchers("/chat/**").hasAnyRole("PROFESSOR","STUDENT")
                     .anyRequest().permitAll()
             .and()
                 .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
