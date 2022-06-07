@@ -4,6 +4,8 @@ import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.container.ContainerService;
+import com.system.wood.domain.report.Report;
+import com.system.wood.domain.report.ReportService;
 import com.system.wood.domain.result.Result;
 import com.system.wood.domain.result.ResultService;
 import com.system.wood.domain.student.Student;
@@ -12,9 +14,11 @@ import com.system.wood.domain.subject.SubjectService;
 import com.system.wood.infra.GradingService;
 import com.system.wood.infra.dto.ResultDto;
 import com.system.wood.infra.storage.StorageService;
+import com.system.wood.web.container.dto.ResponseDto;
 import com.system.wood.web.professor.dto.AssignmentResDto;
 import com.system.wood.web.professor.dto.SubjectDto;
 import com.system.wood.web.student.dto.AsgnSubmDto;
+import com.system.wood.web.student.dto.ReportDto;
 import com.system.wood.web.student.dto.ResultResDto;
 import com.system.wood.web.student.service.StudentService;
 import com.system.wood.web.user.service.UserService;
@@ -25,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +47,7 @@ public class StudentController {
     private final GradingService gradingService;
     private final ResultService resultService;
     private final AssignmentService assignmentService;
+    private final ReportService reportService;
 
     @GetMapping("/subject")
     public ResponseEntity<List<SubjectDto>> getSubjectList(@AuthenticationPrincipal String email) {
@@ -77,8 +83,10 @@ public class StudentController {
     }
 
     @GetMapping("/subject/assignment/result")
-    public ResponseEntity<List<ResultResDto>> getGradingResultList(@AuthenticationPrincipal String email, @RequestParam("imageName") String imageName) {
-        Assignment assignment = assignmentService.getAssignment(imageName);
+    public ResponseEntity<List<ResultResDto>> getGradingResultList(@AuthenticationPrincipal String email, @PathParam("portNum") String portNum) {
+        Integer portnum = Integer.valueOf(portNum);
+        userValidator.validateStudent(email, portnum);
+        Assignment assignment = containerService.getContainer(portnum).getAssignment();
         Student student = userService.findStudent(email);
         List<Result> resultList = resultService.getResultList(student, assignment);
         List<ResultResDto> resultDtoList = resultList.stream().map(ResultResDto::from).collect(Collectors.toList());
@@ -87,15 +95,38 @@ public class StudentController {
     }
 
     @GetMapping("/subject/assignment/result/best")
-    public ResponseEntity<ResultResDto> getBestGradingResult(@AuthenticationPrincipal String email, @RequestParam("imageName") String imageName) {
-        Assignment assignment = assignmentService.getAssignment(imageName);
+    public ResponseEntity<ResultResDto> getBestGradingResult(@AuthenticationPrincipal String email, @PathParam("portNum") String portNum) {
+        Integer portnum = Integer.valueOf(portNum);
+        userValidator.validateStudent(email, portnum);
+        Assignment assignment = containerService.getContainer(portnum).getAssignment();
         Student student = userService.findStudent(email);
         List<Result> bestResult = resultService.getBestResult(student, assignment);
         assert bestResult.size() == 1;
 
-        if(bestResult.isEmpty())
+        if (bestResult.isEmpty())
             return new ResponseEntity<>(new ResultResDto(), HttpStatus.OK);
         else
             return new ResponseEntity<>(ResultResDto.from(bestResult.get(0)), HttpStatus.OK);
+    }
+
+    @PostMapping("/subject/assignment/report")
+    public ResponseEntity<ResponseDto> submitReport(@AuthenticationPrincipal String email, @RequestBody ReportDto reportDto) {
+        userValidator.validateStudent(email, reportDto.getPortNum());
+        Assignment assignment = containerService.getContainer(reportDto.getPortNum()).getAssignment();
+        Student student = userService.findStudent(email);
+        reportService.save(reportDto.toEntity(student,assignment));
+
+        return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
+    }
+
+    @GetMapping("/subject/assignment/report")
+    public ResponseEntity<ReportDto> getReport(@AuthenticationPrincipal String email, @PathParam("portNum") String portNum) {
+        Integer portnum = Integer.valueOf(portNum);
+        userValidator.validateStudent(email, portnum);
+        Assignment assignment = containerService.getContainer(portnum).getAssignment();
+        Student student = userService.findStudent(email);
+        String report = reportService.getReport(student, assignment);
+
+        return new ResponseEntity<>(new ReportDto(report), HttpStatus.OK);
     }
 }
