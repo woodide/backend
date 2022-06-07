@@ -24,7 +24,7 @@ public class WebContainerService {
     private final DockerCompileService dockerCompileService;
 
     @Transactional
-    public Container createContainer(String containerName, String imageName, Student user, Assignment assignment) throws IOException {
+    public Container createContainer(String containerName, String imageName, Student user, Assignment assignment) throws IOException, InterruptedException {
         Container alreadyContainer = containerService.getContainerByName(containerName);
         if(alreadyContainer != null) { // 이미 만들었다면 만든 것 바로 반환
             return alreadyContainer;

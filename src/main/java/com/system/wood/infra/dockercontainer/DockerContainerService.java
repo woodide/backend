@@ -31,11 +31,12 @@ public class DockerContainerService {
     private static final String stop ="docker stop ";
     private static final String rmCommand = "docker rm ";
 
+
     @Value("${file.container-path}")
     private String containerPath;
 
     @Transactional
-    public Container createContainer(String containerName, String imageName, Student user, Assignment assignment) throws IOException, BusinessException {
+    public Container createContainer(String containerName, String imageName, Student user, Assignment assignment) throws IOException, BusinessException, InterruptedException {
         Integer PUID = 82;
         Integer PGID = 82;
         Integer portNum = findFreePort();
@@ -53,7 +54,26 @@ public class DockerContainerService {
                 .lines().collect(Collectors.joining("\n"));
 
         if(error.isEmpty()) {
+            // 컨테이너 생성까지 기다리기
             log.info("컨테이너 생성: "+ output);
+            String logsCmd = createLogs(containerName);
+            log.info(logsCmd);
+                Process logProcess = Runtime.getRuntime()
+                        .exec(logsCmd);
+                BufferedReader stdError = new BufferedReader(new
+                        InputStreamReader(logProcess.getInputStream()));
+                System.out.println("Here is the standard output of the command:\n");
+                String s = null;
+                while ((s = stdError.readLine()) != null) {
+                    System.out.println(s);
+                    log.info("컨테이너 기다리기: "+ s);
+                    if(s.contains("Not serving HTTPS")) { // 컨테이너 생성 끝
+                        log.info("컨테이너 생성 완료: "+ s);
+                        logProcess.destroy();
+                        break;
+                    }
+                }
+                process.waitFor();
         } else {
             log.info("error message: "+error);
             log.info("command: "+ command);
@@ -100,6 +120,14 @@ public class DockerContainerService {
 
         // 컨테이너에서 사용하던 폴더 삭제
         deleteDirectory(path);
+    }
+
+    private String createLogs(String containerName) {
+        return new StringBuilder()
+                .append("docker logs ")
+                .append(containerName)
+                .append(" --follow")
+                .toString();
     }
 
     private String createCommand(Integer PUID, Integer PGID, Integer portNum, String containerName, String imageName) {

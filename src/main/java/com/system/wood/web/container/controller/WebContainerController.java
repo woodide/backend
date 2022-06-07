@@ -43,7 +43,7 @@ public class WebContainerController {
             Container container =  webContainerService.createContainer(containerName, imageName, student, assignment);
             storageService.locateSkeletonCode(container);
             return new ResponseEntity<>(ResponseDto.of(ReturnStatus.SUCCESS, container.getPortNum().toString()), HttpStatus.valueOf(201));
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             log.error(e.getMessage());
             return new ResponseEntity<>(ResponseDto.of(ReturnStatus.FAIL, e.getMessage()), HttpStatus.valueOf(400));
