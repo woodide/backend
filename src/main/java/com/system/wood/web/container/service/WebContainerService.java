@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import java.io.IOException;
 
 @Service
@@ -25,9 +27,9 @@ public class WebContainerService {
 
     @Transactional
     public Container createContainer(String containerName, String imageName, Student user, Assignment assignment) throws IOException, InterruptedException {
-        Container alreadyContainer = containerService.getContainer(containerName);
-        if(alreadyContainer != null) { // 이미 만들었다면 만든 것 바로 반환
-            return alreadyContainer;
+        Optional<Container> alreadyContainer = containerService.getContainerByName(containerName);
+        if(alreadyContainer.isPresent()) { // 이미 만들었다면 만든 것 바로 반환
+            return alreadyContainer.get();
         }
         Container newContainer = infraService.createContainer(containerName, imageName, user, assignment);
 
