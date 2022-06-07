@@ -65,10 +65,10 @@ public class StudentController {
 
     @PostMapping("/subject/assignment/submit")
     public ResponseEntity<ResultDto> submitAssignment(@AuthenticationPrincipal String email, @RequestBody AsgnSubmDto asgnSubmDto) {
-        Container container = containerService.getContainer(asgnSubmDto.getPortNum());
+        Container container = containerService.getContainer(asgnSubmDto.getContainerName());
         Assignment assignment = container.getAssignment();
         // 로그인한 학생이 컨테이너를 소유하고 있는지 확인
-        userValidator.validateStudent(email, asgnSubmDto.getPortNum());
+        userValidator.validateStudent(email, asgnSubmDto.getContainerName());
 
         // 파일 복사
         String target = storageService.locateTarget(container, assignment);
@@ -83,10 +83,9 @@ public class StudentController {
     }
 
     @GetMapping("/subject/assignment/result")
-    public ResponseEntity<List<ResultResDto>> getGradingResultList(@AuthenticationPrincipal String email, @PathParam("portNum") String portNum) {
-        Integer portnum = Integer.valueOf(portNum);
-        userValidator.validateStudent(email, portnum);
-        Assignment assignment = containerService.getContainer(portnum).getAssignment();
+    public ResponseEntity<List<ResultResDto>> getGradingResultList(@AuthenticationPrincipal String email, @PathParam("containerName") String containerName) {
+        userValidator.validateStudent(email, containerName);
+        Assignment assignment = containerService.getContainer(containerName).getAssignment();
         Student student = userService.findStudent(email);
         List<Result> resultList = resultService.getResultList(student, assignment);
         List<ResultResDto> resultDtoList = resultList.stream().map(ResultResDto::from).collect(Collectors.toList());
@@ -95,10 +94,9 @@ public class StudentController {
     }
 
     @GetMapping("/subject/assignment/result/best")
-    public ResponseEntity<ResultResDto> getBestGradingResult(@AuthenticationPrincipal String email, @PathParam("portNum") String portNum) {
-        Integer portnum = Integer.valueOf(portNum);
-        userValidator.validateStudent(email, portnum);
-        Assignment assignment = containerService.getContainer(portnum).getAssignment();
+    public ResponseEntity<ResultResDto> getBestGradingResult(@AuthenticationPrincipal String email, @PathParam("containerName") String containerName) {
+        userValidator.validateStudent(email, containerName);
+        Assignment assignment = containerService.getContainer(containerName).getAssignment();
         Student student = userService.findStudent(email);
         List<Result> bestResult = resultService.getBestResult(student, assignment);
         assert bestResult.size() == 1;
@@ -111,8 +109,8 @@ public class StudentController {
 
     @PostMapping("/subject/assignment/report")
     public ResponseEntity<ResponseDto> submitReport(@AuthenticationPrincipal String email, @RequestBody ReportDto reportDto) {
-        userValidator.validateStudent(email, reportDto.getPortNum());
-        Assignment assignment = containerService.getContainer(reportDto.getPortNum()).getAssignment();
+        userValidator.validateStudent(email, reportDto.getContainerName());
+        Assignment assignment = containerService.getContainer(reportDto.getContainerName()).getAssignment();
         Student student = userService.findStudent(email);
         reportService.save(reportDto.toEntity(student,assignment));
 
@@ -120,10 +118,9 @@ public class StudentController {
     }
 
     @GetMapping("/subject/assignment/report")
-    public ResponseEntity<ReportDto> getReport(@AuthenticationPrincipal String email, @PathParam("portNum") String portNum) {
-        Integer portnum = Integer.valueOf(portNum);
-        userValidator.validateStudent(email, portnum);
-        Assignment assignment = containerService.getContainer(portnum).getAssignment();
+    public ResponseEntity<ReportDto> getReport(@AuthenticationPrincipal String email, @PathParam("containerName") String containerName) {
+        userValidator.validateStudent(email, containerName);
+        Assignment assignment = containerService.getContainer(containerName).getAssignment();
         Student student = userService.findStudent(email);
         String report = reportService.getReport(student, assignment);
 

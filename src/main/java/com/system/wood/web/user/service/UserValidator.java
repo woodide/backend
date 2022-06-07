@@ -25,13 +25,13 @@ public class UserValidator {
             throw new BusinessException(ErrorCode.PROFESSOR_SUBJECT_NOT_MATCHED);
     }
 
-    public void validateStudent(String email, Integer portNum) {
+    public void validateStudent(String email, String containerName) {
         boolean isNotOwner = true;
 
         Student student = userService.findStudent(email);
         List<Container> containerList = student.getContainerList();
         for (Container tmp : containerList) {
-            if(tmp.getPortNum().equals(portNum))
+            if(tmp.getContainerName().equals(containerName))
                 isNotOwner = false;
         }
         if(isNotOwner) throw new BusinessException(ErrorCode.IS_NOT_OWNER);

@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class AsgnSubmDto {
 
-    private Integer portNum;
+    private String containerName;
 }

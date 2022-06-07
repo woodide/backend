@@ -11,15 +11,15 @@ import lombok.Setter;
 @Setter
 public class ReportDto {
 
-    private Integer portNum;
+    private String containerName;
     private String content;
 
     public ReportDto(String content) {
         this.content = content;
     }
 
-    public ReportDto(Integer portNum, String content) {
-        this.portNum = portNum;
+    public ReportDto(String containerName, String content) {
+        this.containerName = containerName;
         this.content = content;
     }
 

@@ -25,7 +25,7 @@ public class WebContainerService {
 
     @Transactional
     public Container createContainer(String containerName, String imageName, Student user, Assignment assignment) throws IOException, InterruptedException {
-        Container alreadyContainer = containerService.getContainerByName(containerName);
+        Container alreadyContainer = containerService.getContainer(containerName);
         if(alreadyContainer != null) { // 이미 만들었다면 만든 것 바로 반환
             return alreadyContainer;
         }
