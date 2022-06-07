@@ -2,6 +2,7 @@ package com.system.wood.web.student.dto;
 
 import com.system.wood.domain.result.Result;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ResultResDto {
     private String executionResult;
     private String submitCode;

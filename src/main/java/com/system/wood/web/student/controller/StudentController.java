@@ -90,8 +90,12 @@ public class StudentController {
     public ResponseEntity<ResultResDto> getBestGradingResult(@AuthenticationPrincipal String email, @RequestParam("imageName") String imageName) {
         Assignment assignment = assignmentService.getAssignment(imageName);
         Student student = userService.findStudent(email);
-        Result bestResult = resultService.getBestResult(student, assignment);
+        List<Result> bestResult = resultService.getBestResult(student, assignment);
+        assert bestResult.size() == 1;
 
-        return new ResponseEntity<>(ResultResDto.from(bestResult), HttpStatus.OK);
+        if(bestResult.isEmpty())
+            return new ResponseEntity<>(new ResultResDto(), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(ResultResDto.from(bestResult.get(0)), HttpStatus.OK);
     }
 }
