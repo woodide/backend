@@ -5,11 +5,8 @@ import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.student.Student;
 import com.system.wood.infra.storage.StorageService;
+import com.system.wood.web.container.dto.*;
 import com.system.wood.web.container.service.WebContainerService;
-import com.system.wood.web.container.dto.ContainerDelDto;
-import com.system.wood.web.container.dto.ContainerReqDto;
-import com.system.wood.web.container.dto.ResponseDto;
-import com.system.wood.web.container.dto.ReturnStatus;
 import com.system.wood.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +29,7 @@ public class WebContainerController {
 
     @ResponseBody
     @PostMapping("/container")
-    public ResponseEntity<ResponseDto> createContainer(@AuthenticationPrincipal String email, @RequestBody ContainerReqDto containerReuestDto){
+    public ResponseEntity createContainer(@AuthenticationPrincipal String email, @RequestBody ContainerReqDto containerReuestDto){
 
         Student student = userService.findStudent(email);
         String containerName = containerReuestDto.getImageName() + student.getStudentNumber();
@@ -42,7 +39,7 @@ public class WebContainerController {
         try {
             Container container =  webContainerService.createContainer(containerName, imageName, student, assignment);
             storageService.locateSkeletonCode(container);
-            return new ResponseEntity<>(ResponseDto.of(ReturnStatus.SUCCESS, container.getPortNum().toString()), HttpStatus.valueOf(201));
+            return new ResponseEntity<>(new ResponseContainerDto(container.getPortNum(),containerName,assignment.getAssignmentName(),assignment.getDueDate(),assignment.getDescription()), HttpStatus.valueOf(201));
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             log.error(e.getMessage());
