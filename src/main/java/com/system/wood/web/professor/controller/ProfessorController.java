@@ -96,11 +96,11 @@ public class ProfessorController {
             List<Result> resultOptional = resultService.getBestResultByAsgnAndStud(studToSubj.getStudent(), assignment, PageRequest.of(0,1));
             if (resultOptional.isEmpty()) {
                 Student student = studToSubj.getStudent();
-                return new StudResDto(false, student.getStudentNumber(), student.getUsername(), 0.0D, 0, "미제출", "미제출");
+                return new StudResDto(student.getEmail(),false, student.getStudentNumber(), student.getUsername(), 0.0D, 0, "미제출", "미제출");
             } else {
                 Result result = resultOptional.get(0);
                 Student student = studToSubj.getStudent();
-                return new StudResDto(true, student.getStudentNumber(), student.getUsername(), result.getScore(), result.getContainer().getCount(), result.getExecutionResult(), result.getSubmitCode());
+                return new StudResDto(student.getEmail(),true, student.getStudentNumber(), student.getUsername(), result.getScore(), result.getContainer().getCount(), result.getExecutionResult(), result.getSubmitCode());
             }
         }).collect(Collectors.toList());
 

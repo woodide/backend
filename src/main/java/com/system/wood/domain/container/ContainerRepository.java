@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ContainerRepository extends JpaRepository<Container, Long> {
+    Optional<Container> findByContainerName(String containerName);
 
     @Query("select c from Container c join fetch c.assignment join fetch c.student where c.containerName = ?1")
     Optional<Container> getContainerByContainerName(String containerName);

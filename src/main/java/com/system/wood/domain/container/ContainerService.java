@@ -21,7 +21,7 @@ public class ContainerService {
     }
 
     public Optional<Container> getContainerByName(String containerName) {
-        return containerRepository.getContainerByContainerName(containerName);
+        return containerRepository.findByContainerName(containerName);
     }
 
     public Container getContainer(String containerName) {
