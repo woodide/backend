@@ -121,7 +121,7 @@ public class ProfessorController {
     @GetMapping("/subject/assignment")
     public ResponseEntity<List<AssignmentResDto>> listAssignments(@RequestParam("code") String code){
         Subject subject = subjectService.getSubject(code);
-        List<AssignmentResDto> dtoList = assignmentService.getAssignmentList(subject).stream().map(assignment -> new AssignmentResDto(assignment.getAssignmentName(), assignment.getDescription(), assignment.getImageName(), assignment.getDueDate())).collect(Collectors.toList());
+        List<AssignmentResDto> dtoList = assignmentService.getAssignmentList(subject).stream().map(assignment -> new AssignmentResDto(assignment.getAssignmentName(), assignment.getDescription(), assignment.getImageName(), assignment.getExistsReport(), assignment.getDueDate())).collect(Collectors.toList());
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 

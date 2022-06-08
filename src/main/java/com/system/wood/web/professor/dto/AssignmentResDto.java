@@ -13,15 +13,16 @@ public class AssignmentResDto {
     private String assignmentName;
     private String description;
     private String imageName;
+    private Boolean existsReport;
 
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dueDate;
 
-
-    public AssignmentResDto(String assignmentName, String description, String imageName, LocalDateTime dueDate) {
+    public AssignmentResDto(String assignmentName, String description, String imageName, Boolean existsReport, LocalDateTime dueDate) {
         this.assignmentName = assignmentName;
         this.description = description;
         this.imageName = imageName;
+        this.existsReport = existsReport;
         this.dueDate = dueDate;
     }
 }

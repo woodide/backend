@@ -32,7 +32,7 @@ public class StudentService {
     public List<AssignmentResDto> getAssignmentDtoList(Subject subject) {
         return assignmentService.getAssignmentList(subject)
                 .stream()
-                .map(assignment -> new AssignmentResDto(assignment.getAssignmentName(), assignment.getDescription(), assignment.getImageName(), assignment.getDueDate()))
+                .map(assignment -> new AssignmentResDto(assignment.getAssignmentName(), assignment.getDescription(), assignment.getImageName(), assignment.getExistsReport(), assignment.getDueDate()))
                 .collect(Collectors.toList());
 
     }
