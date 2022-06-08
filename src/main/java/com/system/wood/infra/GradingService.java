@@ -82,7 +82,6 @@ public class GradingService {
 
             Process process = builder.start();
 
-
             InputStream processInputStream = process.getInputStream();
             OutputStream processOutputStream = process.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(processOutputStream));
@@ -101,6 +100,11 @@ public class GradingService {
 
                 log.info(s);
             }
+            // 파일 삭제
+            File file = new File(assignment.getUploadUrl(), exeFileName);
+            if(file.delete()) log.info("실행 파일 삭제 성공");
+            else log.info("실행 파일 삭제 실패");
+
             log.info("파일 실행");
             return stringBuilder.toString();
         } catch (IOException e) {
@@ -141,6 +145,12 @@ public class GradingService {
                 stringBuilder.append(s)
                         .append(System.getProperty("line.separator"));
             }
+
+            // 파일 삭제
+            File file = new File(assignment.getUploadUrl(), target);
+            if(file.delete()) log.info("실행 파일 삭제 성공");
+            else log.info("실행 파일 삭제 실패");
+
             log.info("파일 실행");
             return stringBuilder.toString();
         } catch (IOException e) {
@@ -163,6 +173,12 @@ public class GradingService {
                     new InputStreamReader(exec.getErrorStream(), StandardCharsets.UTF_8))
                     .lines()
                     .collect(Collectors.joining());
+
+            //파일 삭제
+            File file = new File(assignment.getUploadUrl(), target);
+            if(file.delete()) log.info("실행 파일 삭제 성공");
+            else log.info("실행 파일 삭제 실패");
+
             if (!compileErrorLog.isEmpty())
                 return new CompileDto(compileErrorLog, "", false);
             else {

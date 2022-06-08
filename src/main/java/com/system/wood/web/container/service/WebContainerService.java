@@ -29,8 +29,6 @@ public class WebContainerService {
     private final StorageService storageService;
     private final DockerCompileService dockerCompileService;
 
-
-
     public Container getContainer(String containerName)  {
         Optional<Container> alreadyContainer = containerService.getContainerByName(containerName);
         if(alreadyContainer.isPresent()) { // 이미 만들었다면 만든 것 바로 반환
@@ -47,7 +45,6 @@ public class WebContainerService {
         }
         Container newContainer = infraService.createContainer(containerName, imageName, user, assignment);
         storageService.locateSkeletonCode(newContainer);
-        // todo: 과제에서 기본 세팅 파일을 움직이는 로직이 필요함.
         containerService.save(newContainer);
         return newContainer;
     }
