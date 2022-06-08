@@ -7,6 +7,7 @@ import com.system.wood.global.error.ErrorCode;
 import com.system.wood.jwt.JwtTokenProvider;
 import com.system.wood.domain.Token;
 import com.system.wood.web.container.dto.ResponseDto;
+import com.system.wood.web.professor.dto.StudDto;
 import com.system.wood.web.professor.dto.StudResDto;
 import com.system.wood.web.professor.service.ProfessorService;
 import com.system.wood.web.user.dto.LoginResDto;
@@ -32,11 +33,11 @@ public class UserController {
     @Autowired
     private ProfessorService professorService;
 
-//    @GetMapping("/list/student")
-//    public ResponseEntity<List<StudResDto>> allStudent() {
-//        List<StudResDto> studResDtoList = userService.findAll().stream().map(student -> new StudResDto(student.getStudentNumber(), student.getEmail(), student.getUsername())).collect(Collectors.toList());
-//        return new ResponseEntity<>(studResDtoList, HttpStatus.OK);
-//    }
+    @GetMapping("/list/student")
+    public ResponseEntity<List<StudDto>> allStudent() {
+        List<StudDto> studResDtoList = userService.findAll().stream().map(student -> new StudDto(student.getStudentNumber(), student.getEmail(), student.getUsername())).collect(Collectors.toList());
+        return new ResponseEntity<>(studResDtoList, HttpStatus.OK);
+    }
 
     @GetMapping("/list/professor")
     public ResponseEntity<List<ProfessorDto>> allProfessor() {

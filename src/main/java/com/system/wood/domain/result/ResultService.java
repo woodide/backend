@@ -27,6 +27,11 @@ public class ResultService {
     }
 
     public List<Result> getBestResultByAsgnAndStud(Student student, Assignment assignment, Pageable pageable) {
-        return resultRepository.findResultListByStudentAndAssignment(student, assignment, pageable);
+//        return resultRepository.findResultListByStudentAndAssignment(student, assignment, pageable);
+        List<Result> resultList = resultRepository.findResultListByStudentAndAssignment(student, assignment, pageable);
+        for (Result result : resultList) {
+            System.out.println("result.toString() = " + result.toString());
+        }
+        return resultList;
     }
 }

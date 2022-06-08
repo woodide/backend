@@ -75,8 +75,13 @@ public class ProfessorController {
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
     }
 
+    @GetMapping("/subject/student")
+    public ResponseEntity<List<StudDto>> listStudentList(@RequestParam("code") String code){
+        return new ResponseEntity<>(subjectService.listStudentResDto(code), HttpStatus.OK);
+    }
+
     @GetMapping("/subject/student/result")
-    public ResponseEntity<List<StudResDto>> listStudents(@RequestParam("imageName") String imageName){
+    public ResponseEntity<List<StudResDto>> listResultList(@RequestParam("imageName") String imageName){
         Assignment assignment = assignmentService.getAssignment(imageName);
         Subject subject = assignment.getSubject();
         if (assignment.getSubject().getId() != subject.getId()) {

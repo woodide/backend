@@ -28,6 +28,7 @@ public class ResultDto {
                 .submitCode(submitCode)
                 .student(student)
                 .assignment(assignment)
+                .container(container)
                 .build();
     }
 }

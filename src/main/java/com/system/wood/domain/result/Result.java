@@ -40,11 +40,12 @@ public class Result extends BaseTimeEnity {
     private Container container;
 
     @Builder
-    public Result(Double score, String submitCode, String executionResult, Student student, Assignment assignment) {
+    public Result(Double score, String submitCode, String executionResult, Student student, Assignment assignment, Container container) {
         this.score = score;
         this.submitCode = submitCode;
         this.executionResult = executionResult;
         this.student = student;
         this.assignment = assignment;
+        this.container = container;
     }
 }
