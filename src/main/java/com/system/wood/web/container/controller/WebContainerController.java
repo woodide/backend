@@ -29,10 +29,12 @@ public class WebContainerController {
     private final StorageService storageService;
     @ResponseBody
     @GetMapping("/container")
-    public Container getContainer(@AuthenticationPrincipal String email,@RequestParam("imageName") String imageName){
+    public ResponseEntity getContainer(@AuthenticationPrincipal String email,@RequestParam("imageName") String imageName){
         Student student = userService.findStudent(email);
         String containerName = imageName + student.getStudentNumber();
-        return  webContainerService.getContainer(containerName);
+        Assignment assignment = assignmentService.getAssignment(imageName);
+        Container container = webContainerService.getContainer(containerName);
+        return new ResponseEntity<>(new ResponseContainerDto(container.getPortNum(),containerName,assignment.getAssignmentName(),assignment.getDueDate(),assignment.getDescription()), HttpStatus.valueOf(201));
     }
 
 
