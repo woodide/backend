@@ -21,11 +21,11 @@ public class ContainerService {
     }
 
     public Optional<Container> getContainerByName(String containerName) {
-        return containerRepository.findByContainerName(containerName);
+        return containerRepository.getContainerByContainerName(containerName);
     }
 
     public Container getContainer(String containerName) {
-        return containerRepository.findByContainerName(containerName).orElseThrow(() ->
+        return containerRepository.getContainerByContainerName(containerName).orElseThrow(() ->
                 new EntityNotFoundException(String.format("컨테이너 이름이 %s인 컨테이너 데이터가 존재하지 않습니다.",containerName)));
     }
 

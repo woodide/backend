@@ -34,7 +34,7 @@ public class Container extends BaseTimeEnity {
     private Integer count;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "student_id")
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)

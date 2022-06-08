@@ -9,11 +9,6 @@ import java.util.Optional;
 
 public interface ContainerRepository extends JpaRepository<Container, Long> {
 
-    @Query("select c.portNum from Container c")
-    List<Integer> getAllPorts();
-    Optional<Container> findByContainerName(String containerName);
-    Optional<Container> findByPortNum(Integer portNum);
-
-    List<Container> findByAssignment(Assignment assignment);
-
+    @Query("select c from Container c join fetch c.assignment join fetch c.student where c.containerName = ?1")
+    Optional<Container> getContainerByContainerName(String containerName);
 }
