@@ -25,7 +25,7 @@ public class Container extends BaseTimeEnity {
     @Column(name = "docker_container_id", unique = true, nullable = false)
     private String dockerContainerId;
 
-    @NotNull
+    @Column(unique = true ,nullable = false)
     private String containerName;
 
     @NotNull
