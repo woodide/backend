@@ -4,6 +4,7 @@ import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.container.ContainerService;
+import com.system.wood.domain.report.Report;
 import com.system.wood.domain.report.ReportService;
 import com.system.wood.domain.result.Result;
 import com.system.wood.domain.result.ResultService;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -47,7 +49,6 @@ public class StudentController {
     private final StorageService storageService;
     private final GradingService gradingService;
     private final ResultService resultService;
-    private final AssignmentService assignmentService;
     private final ReportService reportService;
 
     @GetMapping("/subject")
@@ -118,7 +119,7 @@ public class StudentController {
         userValidator.validateStudent(email, reportDto.getContainerName());
         Assignment assignment = containerService.getContainer(reportDto.getContainerName()).getAssignment();
         Student student = userService.findStudent(email);
-        reportService.save(reportDto.toEntity(student,assignment));
+        reportService.saveOrUpdate(reportDto.toEntity(student,assignment));
 
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
     }
@@ -128,7 +129,8 @@ public class StudentController {
         userValidator.validateStudent(email, containerName);
         Assignment assignment = containerService.getContainer(containerName).getAssignment();
         Student student = userService.findStudent(email);
-        String report = reportService.getReport(student, assignment);
+        Optional<Report> savedReport = reportService.getReport(student, assignment);
+        String report = savedReport.isPresent() ? savedReport.get().getContent() : "";
 
         return new ResponseEntity<>(new ReportDto(report), HttpStatus.OK);
     }

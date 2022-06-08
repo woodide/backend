@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
     Optional<Report> findByStudentAndAssignment(Student student, Assignment assignment);
+
+    boolean existsByStudentAndAssignment(Student student, Assignment assignment);
+
 }

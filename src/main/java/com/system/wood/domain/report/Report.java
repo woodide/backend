@@ -34,4 +34,8 @@ public class Report extends BaseTimeEnity {
         this.student = student;
         this.assignment = assignment;
     }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
