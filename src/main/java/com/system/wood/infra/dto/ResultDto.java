@@ -1,6 +1,7 @@
 package com.system.wood.infra.dto;
 
 import com.system.wood.domain.assigment.Assignment;
+import com.system.wood.domain.container.Container;
 import com.system.wood.domain.result.Result;
 import com.system.wood.domain.student.Student;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class ResultDto {
         this.score = score;
     }
 
-    public Result toEntity(Student student, Assignment assignment) {
+    public Result toEntity(Student student, Assignment assignment, Container container) {
         return Result.builder()
                 .score(score)
                 .executionResult(executionResult)

@@ -7,13 +7,21 @@ import lombok.Setter;
 @Setter
 public class StudResDto {
 
+    private Boolean isSubmit;
     private String studentNumber;
-    private String email;
     private String username;
+    private Double bestScore;
+    private Integer count;
+    private String executionResult;
+    private String submitCode;
 
-    public StudResDto(String studentNumber, String email, String username) {
+    public StudResDto(Boolean isSubmit, String studentNumber, String username, Double bestScore, Integer count, String executionResult, String submitCode) {
+        this.isSubmit = isSubmit;
         this.studentNumber = studentNumber;
-        this.email = email;
         this.username = username;
+        this.bestScore = bestScore;
+        this.count = count;
+        this.executionResult = executionResult;
+        this.submitCode = submitCode;
     }
 }

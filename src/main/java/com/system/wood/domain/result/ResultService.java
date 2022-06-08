@@ -3,6 +3,7 @@ package com.system.wood.domain.result;
 import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.student.Student;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class ResultService {
         return resultRepository.findByStudentAndAssignment(student, assignment);
     }
 
-    public List<Result> getBestResult(Student student, Assignment assignment) {
-        return resultRepository.findTop1ByStudentAndAssignmentOrderByScoreDesc(student, assignment);
+    public List<Result> getBestResultByAsgnAndStud(Student student, Assignment assignment, Pageable pageable) {
+        return resultRepository.findResultListByStudentAndAssignment(student, assignment, pageable);
     }
 }

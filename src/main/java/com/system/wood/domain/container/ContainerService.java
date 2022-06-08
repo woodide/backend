@@ -43,4 +43,9 @@ public class ContainerService {
 
         return dockerContainerId;
     }
+
+    @Transactional
+    public void updateCount(Container container) {
+        container.addCountByOne();
+    }
 }

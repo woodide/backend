@@ -1,5 +1,6 @@
 package com.system.wood.domain.container;
 
+import com.system.wood.domain.assigment.Assignment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,5 +13,7 @@ public interface ContainerRepository extends JpaRepository<Container, Long> {
     List<Integer> getAllPorts();
     Optional<Container> findByContainerName(String containerName);
     Optional<Container> findByPortNum(Integer portNum);
+
+    List<Container> findByAssignment(Assignment assignment);
 
 }

@@ -31,6 +31,8 @@ public class Container extends BaseTimeEnity {
     @NotNull
     private String path; // containerName+portNum로 생성
 
+    private Integer count;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Student student;
@@ -40,13 +42,14 @@ public class Container extends BaseTimeEnity {
     private Assignment assignment;
 
     @Builder
-    public Container(Integer portNum, String dockerContainerId, String containerName, String path, Student student, Assignment assignment) {
+    public Container(Integer portNum, String dockerContainerId, String containerName, String path, Student student, Assignment assignment, Integer count) {
         this.portNum = portNum;
         this.dockerContainerId = dockerContainerId;
         this.containerName = containerName;
         this.path = path;
         this.student = student;
         this.assignment = assignment;
+        this.count = count;
     }
 
     public static Container of(Integer portNum, String dockerContainerId, String containerName, String path, Student student, Assignment assignment) {
@@ -57,10 +60,11 @@ public class Container extends BaseTimeEnity {
                 .student(student)
                 .path(path)
                 .assignment(assignment)
+                .count(0)
                 .build();
     }
 
-    public void setUser(Student student) {
-        this.student = student;
+    public void addCountByOne() {
+        this.count++;
     }
 }

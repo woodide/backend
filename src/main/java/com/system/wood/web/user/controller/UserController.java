@@ -32,11 +32,11 @@ public class UserController {
     @Autowired
     private ProfessorService professorService;
 
-    @GetMapping("/list/student")
-    public ResponseEntity<List<StudResDto>> allStudent() {
-        List<StudResDto> studResDtoList = userService.findAll().stream().map(student -> new StudResDto(student.getStudentNumber(), student.getEmail(), student.getUsername())).collect(Collectors.toList());
-        return new ResponseEntity<>(studResDtoList, HttpStatus.OK);
-    }
+//    @GetMapping("/list/student")
+//    public ResponseEntity<List<StudResDto>> allStudent() {
+//        List<StudResDto> studResDtoList = userService.findAll().stream().map(student -> new StudResDto(student.getStudentNumber(), student.getEmail(), student.getUsername())).collect(Collectors.toList());
+//        return new ResponseEntity<>(studResDtoList, HttpStatus.OK);
+//    }
 
     @GetMapping("/list/professor")
     public ResponseEntity<List<ProfessorDto>> allProfessor() {

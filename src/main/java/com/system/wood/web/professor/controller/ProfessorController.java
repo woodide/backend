@@ -2,7 +2,11 @@ package com.system.wood.web.professor.controller;
 
 import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
+import com.system.wood.domain.container.ContainerService;
 import com.system.wood.domain.professor.Professor;
+import com.system.wood.domain.result.Result;
+import com.system.wood.domain.result.ResultService;
+import com.system.wood.domain.student.Student;
 import com.system.wood.domain.subject.Subject;
 import com.system.wood.domain.subject.SubjectService;
 import com.system.wood.domain.testcase.Testcase;
@@ -18,6 +22,7 @@ import com.system.wood.web.user.service.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,6 +46,8 @@ public class ProfessorController {
     private final StorageService storageService;
     private final SubjectService subjectService;
     private final UserValidator userValidator;
+    private final ResultService resultService;
+    private final ContainerService containerService;
 
     @GetMapping("/subject")
     public ResponseEntity<List<SubjectDto>> listSubjects(@AuthenticationPrincipal String email){
@@ -68,9 +75,27 @@ public class ProfessorController {
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.OK);
     }
 
-    @GetMapping("/subject/student")
-    public ResponseEntity<List<StudResDto>> listStudents(@RequestParam("code") String code){
-        return new ResponseEntity<>(subjectService.listStudentResDto(code), HttpStatus.OK);
+    @GetMapping("/subject/student/result")
+    public ResponseEntity<List<StudResDto>> listStudents(@RequestParam("imageName") String imageName){
+        Assignment assignment = assignmentService.getAssignment(imageName);
+        Subject subject = assignment.getSubject();
+        if (assignment.getSubject().getId() != subject.getId()) {
+            throw new RuntimeException("과목에 포함되지 않는 과제입니다.");
+        }
+
+        List<StudResDto> studResDtoList = subject.getStudToSubjList().stream().map(studToSubj -> {
+            List<Result> resultOptional = resultService.getBestResultByAsgnAndStud(studToSubj.getStudent(), assignment, PageRequest.of(0,1));
+            if (resultOptional.isEmpty()) {
+                Student student = studToSubj.getStudent();
+                return new StudResDto(false, student.getStudentNumber(), student.getUsername(), 0.0D, 0, "미제출", "미제출");
+            } else {
+                Result result = resultOptional.get(0);
+                Student student = studToSubj.getStudent();
+                return new StudResDto(true, student.getStudentNumber(), student.getUsername(), result.getScore(), result.getContainer().getCount(), result.getExecutionResult(), result.getSubmitCode());
+            }
+        }).collect(Collectors.toList());
+
+        return new ResponseEntity<>(studResDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/subject/assignment")
@@ -113,4 +138,8 @@ public class ProfessorController {
 
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(200));
     }
+
+    // 학생 리스트에서 학생 결과를 조회하는 거임
+//     @GetMapping("/subject/assignment/result")
+
 }

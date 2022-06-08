@@ -41,7 +41,7 @@ public class Assignment extends BaseTimeEnity {
 
     private LocalDateTime dueDate; // 종료일
 
-    @OneToOne(mappedBy = "assignment", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "assignment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Testcase testcase;
 
     @ManyToOne(fetch = FetchType.LAZY)

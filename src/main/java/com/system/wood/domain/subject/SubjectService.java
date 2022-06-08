@@ -19,12 +19,12 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
 
-    public List<StudResDto> listStudentResDto(String code) {
-        return getSubject(code).getStudToSubjList().stream().map(studToSubj -> {
-            Student student = studToSubj.getStudent();
-            return new StudResDto(student.getStudentNumber(), student.getEmail(), student.getUsername());
-        }).collect(Collectors.toList());
-    }
+//    public List<StudResDto> listStudentResDto(String code) {
+//        return getSubject(code).getStudToSubjList().stream().map(studToSubj -> {
+//            Student student = studToSubj.getStudent();
+//            return new StudResDto(student.getStudentNumber(), student.getUsername());
+//        }).collect(Collectors.toList());
+//    }
 
     public List<SubjectDto> getSubjectList(Professor professor) {
         return subjectRepository.findByProfessor(professor).stream().map(subject -> new SubjectDto(subject.getName(), subject.getCode())).collect(Collectors.toList());

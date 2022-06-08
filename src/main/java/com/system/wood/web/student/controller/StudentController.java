@@ -4,7 +4,6 @@ import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.container.ContainerService;
-import com.system.wood.domain.report.Report;
 import com.system.wood.domain.report.ReportService;
 import com.system.wood.domain.result.Result;
 import com.system.wood.domain.result.ResultService;
@@ -24,12 +23,14 @@ import com.system.wood.web.student.service.StudentService;
 import com.system.wood.web.user.service.UserService;
 import com.system.wood.web.user.service.UserValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,7 +78,8 @@ public class StudentController {
         ResultDto gradingDto = gradingService.execute(assignment, container, target);
 
         // 채점 결과 저장
-        resultService.save(gradingDto.toEntity(container.getStudent(), assignment));
+        resultService.save(gradingDto.toEntity(container.getStudent(), assignment, container));
+        containerService.updateCount(container);
 
         return new ResponseEntity<>(gradingDto, HttpStatus.OK);
     }
@@ -88,23 +90,27 @@ public class StudentController {
         Assignment assignment = containerService.getContainer(containerName).getAssignment();
         Student student = userService.findStudent(email);
         List<Result> resultList = resultService.getResultList(student, assignment);
-        List<ResultResDto> resultDtoList = resultList.stream().map(ResultResDto::from).collect(Collectors.toList());
+        List<ResultResDto> resultResDtoList = new ArrayList<>();
+        for (int idx = 0; idx < resultList.size() ; idx++) {
+            ResultResDto resultResDto = ResultResDto.of(resultList.get(idx), idx + 1);
+            resultResDtoList.add(resultResDto);
+        }
 
-        return new ResponseEntity<>(resultDtoList, HttpStatus.OK);
+        return new ResponseEntity<>(resultResDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/subject/assignment/result/best")
     public ResponseEntity<ResultResDto> getBestGradingResult(@AuthenticationPrincipal String email, @PathParam("containerName") String containerName) {
         userValidator.validateStudent(email, containerName);
-        Assignment assignment = containerService.getContainer(containerName).getAssignment();
+        Container container = containerService.getContainer(containerName);
+        Assignment assignment = container.getAssignment();
         Student student = userService.findStudent(email);
-        List<Result> bestResult = resultService.getBestResult(student, assignment);
-        assert bestResult.size() == 1;
+        List<Result> bestResult = resultService.getBestResultByAsgnAndStud(student, assignment, PageRequest.of(0,1));
 
         if (bestResult.isEmpty())
             return new ResponseEntity<>(new ResultResDto(), HttpStatus.OK);
         else
-            return new ResponseEntity<>(ResultResDto.from(bestResult.get(0)), HttpStatus.OK);
+            return new ResponseEntity<>(ResultResDto.of(bestResult.get(0), container.getCount()), HttpStatus.OK);
     }
 
     @PostMapping("/subject/assignment/report")
