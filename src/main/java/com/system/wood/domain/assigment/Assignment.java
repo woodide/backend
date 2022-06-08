@@ -39,6 +39,8 @@ public class Assignment extends BaseTimeEnity {
 
     private String targetFileName;
 
+    private Boolean existsReport;
+
     private LocalDateTime dueDate; // 종료일
 
     @OneToOne(mappedBy = "assignment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -49,7 +51,7 @@ public class Assignment extends BaseTimeEnity {
     private Subject subject;
 
     @Builder
-    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageName, String targetFileName, LocalDateTime dueDate, Subject subject) {
+    public Assignment(String assignmentName, String description, String language, String languageVersion, String uploadUrl, String imageName, String targetFileName, Boolean existsReport, LocalDateTime dueDate, Subject subject) {
         this.assignmentName = assignmentName;
         this.description = description;
         this.language = language;
@@ -57,6 +59,7 @@ public class Assignment extends BaseTimeEnity {
         this.uploadUrl = uploadUrl;
         this.imageName = imageName;
         this.targetFileName = targetFileName;
+        this.existsReport = existsReport;
         this.dueDate = dueDate;
         this.subject = subject;
     }

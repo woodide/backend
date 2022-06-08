@@ -4,6 +4,8 @@ import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.container.ContainerService;
 import com.system.wood.domain.professor.Professor;
+import com.system.wood.domain.report.Report;
+import com.system.wood.domain.report.ReportService;
 import com.system.wood.domain.result.Result;
 import com.system.wood.domain.result.ResultService;
 import com.system.wood.domain.student.Student;
@@ -17,6 +19,7 @@ import com.system.wood.web.container.dto.ResponseDto;
 import com.system.wood.web.container.dto.ReturnStatus;
 import com.system.wood.web.container.service.WebContainerService;
 import com.system.wood.web.professor.service.ProfessorService;
+import com.system.wood.web.student.dto.ReportDto;
 import com.system.wood.web.user.service.UserService;
 import com.system.wood.web.user.service.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -47,7 +51,7 @@ public class ProfessorController {
     private final SubjectService subjectService;
     private final UserValidator userValidator;
     private final ResultService resultService;
-    private final ContainerService containerService;
+    private final ReportService reportService;
 
     @GetMapping("/subject")
     public ResponseEntity<List<SubjectDto>> listSubjects(@AuthenticationPrincipal String email){
@@ -103,6 +107,17 @@ public class ProfessorController {
         return new ResponseEntity<>(studResDtoList, HttpStatus.OK);
     }
 
+    @GetMapping("/subject/student/report")
+    public ResponseEntity<ReportDto> getReport(@RequestParam("imageName") String imageName, @RequestParam("email") String email){
+        Assignment assignment = assignmentService.getAssignment(imageName);
+        Student student = userService.findStudent(email);
+        Optional<Report> report = reportService.getReport(student, assignment);
+
+        return (report.isPresent())
+                ? new ResponseEntity<>(new ReportDto(report.get().getContent()), HttpStatus.OK)
+                : new ResponseEntity<>(new ReportDto(""), HttpStatus.OK);
+    }
+
     @GetMapping("/subject/assignment")
     public ResponseEntity<List<AssignmentResDto>> listAssignments(@RequestParam("code") String code){
         Subject subject = subjectService.getSubject(code);
@@ -143,8 +158,4 @@ public class ProfessorController {
 
         return new ResponseEntity<>(ResponseDto.getSuccessDto(), HttpStatus.valueOf(200));
     }
-
-    // 학생 리스트에서 학생 결과를 조회하는 거임
-//     @GetMapping("/subject/assignment/result")
-
 }

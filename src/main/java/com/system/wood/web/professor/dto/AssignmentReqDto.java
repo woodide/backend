@@ -35,6 +35,8 @@ public class AssignmentReqDto {
 
     private String subjectCode;
 
+    private Boolean existsReport;
+
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dueDate;
 
@@ -47,6 +49,7 @@ public class AssignmentReqDto {
                 .uploadUrl(uploadUrl)
                 .imageName(imageName)
                 .targetFileName(targetFileName)
+                .existsReport(existsReport)
                 .dueDate(dueDate)
                 .subject(subject)
                 .build();
