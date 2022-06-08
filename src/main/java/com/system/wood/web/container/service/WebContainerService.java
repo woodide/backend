@@ -8,8 +8,10 @@ import com.system.wood.global.error.BusinessException;
 import com.system.wood.global.error.ErrorCode;
 import com.system.wood.infra.dockercontainer.DockerContainerService;
 import com.system.wood.infra.DockerCompileService;
+import com.system.wood.infra.storage.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.cache.spi.support.StorageAccess;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,8 @@ import java.io.IOException;
 public class WebContainerService {
     private final ContainerService containerService;
     private final DockerContainerService infraService;
+
+    private final StorageService storageService;
     private final DockerCompileService dockerCompileService;
 
 
@@ -42,7 +46,7 @@ public class WebContainerService {
             return alreadyContainer.get();
         }
         Container newContainer = infraService.createContainer(containerName, imageName, user, assignment);
-
+        storageService.locateSkeletonCode(newContainer);
         // todo: 과제에서 기본 세팅 파일을 움직이는 로직이 필요함.
         containerService.save(newContainer);
         return newContainer;

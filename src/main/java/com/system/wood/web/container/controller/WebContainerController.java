@@ -4,7 +4,6 @@ import com.system.wood.domain.assigment.Assignment;
 import com.system.wood.domain.assigment.AssignmentService;
 import com.system.wood.domain.container.Container;
 import com.system.wood.domain.student.Student;
-import com.system.wood.infra.storage.StorageService;
 import com.system.wood.web.container.dto.*;
 import com.system.wood.web.container.service.WebContainerService;
 import com.system.wood.web.user.service.UserService;
@@ -16,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -26,7 +24,6 @@ public class WebContainerController {
     private final WebContainerService webContainerService;
     private final UserService userService;
     private final AssignmentService assignmentService;
-    private final StorageService storageService;
     @ResponseBody
     @GetMapping("/container")
     public ResponseEntity getContainer(@AuthenticationPrincipal String email,@RequestParam("imageName") String imageName){
@@ -49,7 +46,7 @@ public class WebContainerController {
 
         try {
             Container container =  webContainerService.createContainer(containerName, imageName, student, assignment);
-            storageService.locateSkeletonCode(container);
+
             return new ResponseEntity<>(new ResponseContainerDto(container.getPortNum(),containerName,assignment.getAssignmentName(),assignment.getDueDate(),assignment.getDescription()), HttpStatus.valueOf(201));
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

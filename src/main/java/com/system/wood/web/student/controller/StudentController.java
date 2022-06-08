@@ -92,7 +92,7 @@ public class StudentController {
         List<Result> resultList = resultService.getResultList(student, assignment);
         List<ResultResDto> resultResDtoList = new ArrayList<>();
         for (int idx = 0; idx < resultList.size() ; idx++) {
-            ResultResDto resultResDto = ResultResDto.of(resultList.get(idx), idx + 1);
+            ResultResDto resultResDto = ResultResDto.of(assignment.getTargetFileName(), resultList.get(idx), idx + 1);
             resultResDtoList.add(resultResDto);
         }
 
@@ -110,7 +110,7 @@ public class StudentController {
         if (bestResult.isEmpty())
             return new ResponseEntity<>(new ResultResDto(), HttpStatus.OK);
         else
-            return new ResponseEntity<>(ResultResDto.of(bestResult.get(0), container.getCount()), HttpStatus.OK);
+            return new ResponseEntity<>(ResultResDto.of(assignment.getTargetFileName(), bestResult.get(0), container.getCount()), HttpStatus.OK);
     }
 
     @PostMapping("/subject/assignment/report")
