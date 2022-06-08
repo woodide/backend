@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -26,6 +27,14 @@ public class WebContainerController {
     private final UserService userService;
     private final AssignmentService assignmentService;
     private final StorageService storageService;
+    @ResponseBody
+    @GetMapping("/container")
+    public Container getContainer(@AuthenticationPrincipal String email,@RequestParam("imageName") String imageName){
+        Student student = userService.findStudent(email);
+        String containerName = imageName + student.getStudentNumber();
+        return  webContainerService.getContainer(containerName);
+    }
+
 
     @ResponseBody
     @PostMapping("/container")
