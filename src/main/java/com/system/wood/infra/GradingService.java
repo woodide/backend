@@ -78,8 +78,10 @@ public class GradingService {
             ProcessBuilder builder = new ProcessBuilder("./" + exeFileName)
                     .directory(new File(assignment.getUploadUrl()))
                     .redirectErrorStream(true);
+            log.info(exeFileName);
 
             Process process = builder.start();
+
 
             InputStream processInputStream = process.getInputStream();
             OutputStream processOutputStream = process.getOutputStream();
@@ -90,10 +92,14 @@ public class GradingService {
             writer.write(content);
             writer.flush();
 
+            log.info(content + "2");
+
             String s = null;
             while ((s = reader.readLine()) != null) {
                 stringBuilder.append(s)
                         .append(System.getProperty("line.separator"));
+
+                log.info(s);
             }
             log.info("파일 실행");
             return stringBuilder.toString();
@@ -144,7 +150,7 @@ public class GradingService {
     }
 
     private CompileDto compileCLang(Assignment assignment, Container container, String target) {
-        String exeFileName = container.getStudent().getStudentNumber()+"exe";
+        String exeFileName = container.getStudent().getStudentNumber();
         String command = new StringBuilder("gcc ")
                             .append(target)
                             .append(" -o ")
