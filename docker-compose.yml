@@ -19,7 +19,7 @@ services:
     container_name: wood_app
     image: openjdk:11-jdk
     ports:
-      - 80:8080
+      - 8080:8080
     volumes:
       - ./:/app
     links:
