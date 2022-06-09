@@ -15,21 +15,6 @@ services:
       - ./db-data:/var/lib/mysql
     ports:
       - 3306:3306
-  wood-app:
-    container_name: wood_app
-    image: openjdk:11-jdk
-    ports:
-      - 8080:8080
-    volumes:
-      - ./:/app
-    links:
-      - wood-db
-    working_dir: /app
-    command: [ "./gradlew", "bootrun" ]
-    depends_on:
-      - wood-db
-    restart: always
-
 
 volumes:
   db-data:
